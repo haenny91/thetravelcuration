@@ -28,7 +28,6 @@
             border: 1px solid #eee;
         }
         
-        /* 쿠폰 왼쪽 영역 수정 */
         .coupon-left {
             background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%);
             color: white;
@@ -43,7 +42,6 @@
             border-right: 2px dashed rgba(255,255,255,0.4);
         }
         
-        /* 통화 기호 스타일 (상단) */
         .coupon-left .currency { 
             font-size: 1rem; 
             font-weight: 700; 
@@ -51,7 +49,6 @@
             margin-bottom: 2px;
         }
         
-        /* 금액 숫자 스타일 (하단) */
         .coupon-left .amount { 
             font-size: 2rem; 
             font-weight: 900; 
@@ -138,19 +135,14 @@
     const SHEET_ID = '1AACJ3r6VIcK2AH65wlJdLPP-7yJKTSW4Z-39msUgDu0';
     const TAB_NAME = 'Home-Coupon List';
 
-    /* 통화와 금액을 분리하여 렌더링하는 함수 */
     function renderDiscountValue(discountStr) {
         if (!discountStr) return '';
-        
-        // HKD20, JPY3,000 등 통화 기호(알파벳)와 숫자를 분리
         const match = discountStr.match(/([a-zA-Z]+|[^0-9\s,.]+)?\s*([0-9,.]+.*)/);
-        
         if (match) {
             const currency = match[1] || '';
             const amount = match[2] || '';
             return `<span class="currency">${currency}</span><span class="amount">${amount}</span>`;
         }
-        
         return `<span class="amount">${discountStr}</span>`;
     }
 
@@ -240,6 +232,7 @@
             bannerHtml += '</div>';
             rowDiv.innerHTML = couponHtml + bannerHtml;
             wrapper.appendChild(rowDiv);
+            
             const scripts = rowDiv.getElementsByTagName('script');
             for (let i = 0; i < scripts.length; i++) {
                 const newScript = document.createElement('script');
