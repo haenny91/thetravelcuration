@@ -42,84 +42,24 @@
             border-right: 2px dashed rgba(255,255,255,0.4);
         }
         
-        .coupon-left .currency { 
-            font-size: 1rem; 
-            font-weight: 700; 
-            opacity: 0.9;
-            margin-bottom: 2px;
-        }
-        
-        .coupon-left .amount { 
-            font-size: 2rem; 
-            font-weight: 900; 
-            letter-spacing: -0.05em; 
-            line-height: 1; 
-        }
-
+        .coupon-left .currency { font-size: 1rem; font-weight: 700; opacity: 0.9; margin-bottom: 2px; }
+        .coupon-left .amount { font-size: 2rem; font-weight: 900; letter-spacing: -0.05em; line-height: 1; }
         .coupon-left .unit { font-size: 0.8rem; margin-top: 8px; font-weight: 600; opacity: 0.9; }
 
-        .coupon-info { 
-            padding: 18px 25px; 
-            flex-grow: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center;
-            background: #fff;
-        }
-        
-        .coupon-tag { 
-            font-size: 0.7rem; 
-            font-weight: 800; 
-            color: #ff5b00; 
-            margin-bottom: 6px;
-            background: #fff0e9;
-            padding: 2px 8px;
-            border-radius: 4px;
-            width: fit-content;
-        }
-        
-        .coupon-info h4 { 
-            font-size: 1.25rem; 
-            color: #111; 
-            line-height: 1.2; 
-            font-weight: 800;
-            margin-bottom: 8px;
-            letter-spacing: -0.03em;
-        }
-        
+        .coupon-info { padding: 18px 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; background: #fff; }
+        .coupon-tag { font-size: 0.7rem; font-weight: 800; color: #ff5b00; margin-bottom: 6px; background: #fff0e9; padding: 2px 8px; border-radius: 4px; width: fit-content; }
+        .coupon-info h4 { font-size: 1.25rem; color: #111; line-height: 1.2; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.03em; }
         .coupon-subtext { font-size: 0.8rem; color: #666; line-height: 1.4; font-weight: 500; }
         .coupon-valid { font-size: 0.7rem; color: #aaa; margin-top: 6px; }
 
         .coupon-card::before, .coupon-card::after {
-            content: '';
-            position: absolute;
-            left: 120px;
-            width: 20px;
-            height: 20px;
-            background-color: #f8f9fa;
-            border-radius: 50%;
-            z-index: 2;
-            border: 1px solid #eee;
+            content: ''; position: absolute; left: 120px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee;
         }
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
 
-        .banner-container {
-            flex: 0 0 60%;
-            display: flex;
-            gap: 12px;
-        }
-
-        .dynamic-banner { 
-            flex: 1;
-            background: #fff; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
+        .banner-container { flex: 0 0 60%; display: flex; gap: 12px; }
+        .dynamic-banner { flex: 1; background: #fff; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
         @media (max-width: 1024px) {
             .horizontal-row { flex-direction: column; }
@@ -135,6 +75,11 @@
     const SHEET_ID = '1AACJ3r6VIcK2AH65wlJdLPP-7yJKTSW4Z-39msUgDu0';
     const TAB_NAME = 'Home-Coupon List';
 
+    function cleanHtmlText(text) {
+        if (!text) return '';
+        return text.replace(/<!DOCTYPE html>|<html>|<head>|<\/head>|<body>|<\/body>|<!DOCTYPE\s+html[^>]*>/gi, '').trim();
+    }
+
     function renderDiscountValue(discountStr) {
         if (!discountStr) return '';
         const match = discountStr.match(/([a-zA-Z]+|[^0-9\s,.]+)?\s*([0-9,.]+.*)/);
@@ -148,18 +93,13 @@
 
     function smartTranslate(text) {
         if (!text) return '';
-        let t = text.trim();
+        let t = cleanHtmlText(text);
         const replaceMap = [
             { en: /Promo code descriptions/gi, ko: "쿠폰 상세 혜택" },
             { en: /Promo code des/gi, ko: "쿠폰 상세 혜택" },
             { en: /Terms & Conditions/gi, ko: "이용 약관 및 유의사항" },
             { en: /Valid until/gi, ko: "유효 기간" },
-            { en: /Discount description/gi, ko: "할인 혜택 상세" },
-            { en: /Discount descrip/gi, ko: "할인 혜택 상세" },
-            { en: /App only/gi, ko: "앱 전용" },
-            { en: /New users only/gi, ko: "신규 회원 전용" },
-            { en: /Minimum spend/gi, ko: "최소 결제 금액" },
-            { en: /Maximum discount/gi, ko: "최대 할인액" }
+            { en: /Discount description/gi, ko: "할인 혜택 상세" }
         ];
         replaceMap.forEach(item => { t = t.replace(item.en, item.ko); });
         return t;
@@ -227,7 +167,7 @@
             `;
             let bannerHtml = '<div class="banner-container">';
             coupon.banners.forEach(html => {
-                bannerHtml += `<div class="dynamic-banner">${html}</div>`;
+                bannerHtml += `<div class="dynamic-banner">${cleanHtmlText(html)}</div>`;
             });
             bannerHtml += '</div>';
             rowDiv.innerHTML = couponHtml + bannerHtml;
