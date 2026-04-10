@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -7,77 +6,41 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Pretendard', sans-serif; background-color: #f8f9fa; padding: 20px; }
-        
-        .horizontal-row {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto 30px auto;
-            display: flex;
-            gap: 12px;
-            align-items: stretch;
-        }
-
-        .coupon-card { 
-            flex: 0 0 40%;
-            background: #fff; 
-            border-radius: 12px; 
-            display: flex; 
-            overflow: hidden; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            position: relative;
-            border: 1px solid #eee;
-        }
-        
-        .coupon-left {
-            background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%);
-            color: white;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 130px;
-            min-width: 130px;
-            text-align: center;
-            border-right: 2px dashed rgba(255,255,255,0.4);
-        }
-        
+        .horizontal-row { width: 100%; max-width: 1200px; margin: 0 auto 30px auto; display: flex; gap: 12px; align-items: stretch; }
+        .coupon-card { flex: 0 0 40%; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); position: relative; border: 1px solid #eee; }
+        .coupon-left { background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%); color: white; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 130px; min-width: 130px; text-align: center; border-right: 2px dashed rgba(255,255,255,0.4); }
         .coupon-left .currency { font-size: 1rem; font-weight: 700; opacity: 0.9; margin-bottom: 2px; }
         .coupon-left .amount { font-size: 2rem; font-weight: 900; letter-spacing: -0.05em; line-height: 1; }
         .coupon-left .unit { font-size: 0.8rem; margin-top: 8px; font-weight: 600; opacity: 0.9; }
-
         .coupon-info { padding: 18px 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; background: #fff; }
         .coupon-tag { font-size: 0.7rem; font-weight: 800; color: #ff5b00; margin-bottom: 6px; background: #fff0e9; padding: 2px 8px; border-radius: 4px; width: fit-content; }
         .coupon-info h4 { font-size: 1.25rem; color: #111; line-height: 1.2; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.03em; }
         .coupon-subtext { font-size: 0.8rem; color: #666; line-height: 1.4; font-weight: 500; }
         .coupon-valid { font-size: 0.7rem; color: #aaa; margin-top: 6px; }
-
-        .coupon-card::before, .coupon-card::after {
-            content: ''; position: absolute; left: 120px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee;
-        }
+        .coupon-card::before, .coupon-card::after { content: ''; position: absolute; left: 120px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee; }
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
-
         .banner-container { flex: 0 0 60%; display: flex; gap: 12px; }
         .dynamic-banner { flex: 1; background: #fff; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-
-        @media (max-width: 1024px) {
-            .horizontal-row { flex-direction: column; }
-            .coupon-card, .banner-container { flex: 1 1 auto; }
-        }
+        @media (max-width: 1024px) { .horizontal-row { flex-direction: column; } .coupon-card, .banner-container { flex: 1 1 auto; } }
     </style>
 </head>
 <body>
-
 <div id="contentWrapper"></div>
-
 <script>
     const SHEET_ID = '1AACJ3r6VIcK2AH65wlJdLPP-7yJKTSW4Z-39msUgDu0';
     const TAB_NAME = 'Home-Coupon List';
 
     function cleanHtmlText(text) {
         if (!text) return '';
-        return text.replace(/<!DOCTYPE html>|<html>|<head>|<\/head>|<body>|<\/body>|<!DOCTYPE\s+html[^>]*>/gi, '').trim();
+        let cleaned = String(text);
+        cleaned = cleaned.replace(/<!DOCTYPE html>/gi, '');
+        cleaned = cleaned.replace(/<html>/gi, '');
+        cleaned = cleaned.replace(/<\/html>/gi, '');
+        cleaned = cleaned.replace(/<head>[\s\S]*?<\/head>/gi, '');
+        cleaned = cleaned.replace(/<body>/gi, '');
+        cleaned = cleaned.replace(/<\/body>/gi, '');
+        return cleaned.trim();
     }
 
     function renderDiscountValue(discountStr) {
@@ -172,7 +135,6 @@
             bannerHtml += '</div>';
             rowDiv.innerHTML = couponHtml + bannerHtml;
             wrapper.appendChild(rowDiv);
-            
             const scripts = rowDiv.getElementsByTagName('script');
             for (let i = 0; i < scripts.length; i++) {
                 const newScript = document.createElement('script');
@@ -184,6 +146,5 @@
     }
     window.onload = fetchData;
 </script>
-
 </body>
 </html>
