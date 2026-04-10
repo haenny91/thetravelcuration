@@ -34,12 +34,7 @@
     function cleanHtmlText(text) {
         if (!text) return '';
         let cleaned = String(text);
-        cleaned = cleaned.replace(/<!DOCTYPE html>/gi, '');
-        cleaned = cleaned.replace(/<html>/gi, '');
-        cleaned = cleaned.replace(/<\/html>/gi, '');
-        cleaned = cleaned.replace(/<head>[\s\S]*?<\/head>/gi, '');
-        cleaned = cleaned.replace(/<body>/gi, '');
-        cleaned = cleaned.replace(/<\/body>/gi, '');
+        cleaned = cleaned.replace(/<!DOCTYPE html>|<html>|<\/html>|<body>|<\/body>|<head>[\s\S]*?<\/head>/gi, '');
         return cleaned.trim();
     }
 
@@ -52,20 +47,6 @@
             return `<span class="currency">${currency}</span><span class="amount">${amount}</span>`;
         }
         return `<span class="amount">${discountStr}</span>`;
-    }
-
-    function smartTranslate(text) {
-        if (!text) return '';
-        let t = cleanHtmlText(text);
-        const replaceMap = [
-            { en: /Promo code descriptions/gi, ko: "쿠폰 상세 혜택" },
-            { en: /Promo code des/gi, ko: "쿠폰 상세 혜택" },
-            { en: /Terms & Conditions/gi, ko: "이용 약관 및 유의사항" },
-            { en: /Valid until/gi, ko: "유효 기간" },
-            { en: /Discount description/gi, ko: "할인 혜택 상세" }
-        ];
-        replaceMap.forEach(item => { t = t.replace(item.en, item.ko); });
-        return t;
     }
 
     function formatSheetDate(dateStr) {
@@ -95,9 +76,9 @@
         const rows = response.table.rows;
         const coupons = rows.map(row => ({
             discount: row.c[1] ? String(row.c[1].v) : '',
-            title: row.c[2] ? String(row.c[2].v) : '',
+            titleKo: row.c[18] ? String(row.c[18].v) : (row.c[2] ? String(row.c[2].v) : ''),
             valid: row.c[7] ? String(row.c[7].v) : '',
-            terms: row.c[9] ? String(row.c[9].v) : '',
+            termsKo: row.c[17] ? String(row.c[17].v) : (row.c[9] ? String(row.c[9].v) : ''),
             banners: [
                 row.c[13] ? row.c[13].v : null,
                 row.c[14] ? row.c[14].v : null,
@@ -122,8 +103,8 @@
                     </div>
                     <div class="coupon-info">
                         <span class="coupon-tag">특별 혜택</span>
-                        <h4>${smartTranslate(coupon.title)}</h4>
-                        <p class="coupon-subtext">${smartTranslate(coupon.terms)}</p>
+                        <h4>${cleanHtmlText(coupon.titleKo)}</h4>
+                        <p class="coupon-subtext">${cleanHtmlText(coupon.termsKo)}</p>
                         <p class="coupon-valid">유효기간: ${formatSheetDate(coupon.valid)}</p>
                     </div>
                 </div>
