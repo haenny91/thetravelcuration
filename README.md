@@ -14,9 +14,11 @@
         .coupon-left .unit { font-size: 0.8rem; margin-top: 8px; font-weight: 600; opacity: 0.9; }
         .coupon-info { padding: 18px 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; background: #fff; }
         .coupon-tag { font-size: 0.7rem; font-weight: 800; color: #ff5b00; margin-bottom: 6px; background: #fff0e9; padding: 2px 8px; border-radius: 4px; width: fit-content; }
-        .coupon-info h4 { font-size: 1.25rem; color: #111; line-height: 1.2; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.03em; }
-        .coupon-subtext { font-size: 0.8rem; color: #666; line-height: 1.4; font-weight: 500; }
-        .coupon-valid { font-size: 0.7rem; color: #aaa; margin-top: 6px; }
+        .coupon-info h4 { font-size: 1.1rem; color: #111; line-height: 1.3; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.03em; }
+        .coupon-subtext { font-size: 0.8rem; color: #666; line-height: 1.6; font-weight: 500; white-space: pre-line; }
+        .coupon-valid { font-size: 0.75rem; color: #ff5b00; margin-top: 10px; font-weight: 700; }
+        .copy-btn { margin-top: 14px; background: #111; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s; width: fit-content; }
+        .copy-btn:active { background: #ff5b00; }
         .coupon-card::before, .coupon-card::after { content: ''; position: absolute; left: 120px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee; }
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
@@ -31,11 +33,55 @@
     const SHEET_ID = '1AACJ3r6VIcK2AH65wlJdLPP-7yJKTSW4Z-39msUgDu0';
     const TAB_NAME = 'Home-Coupon List';
 
-    function cleanHtmlText(text) {
+    function cleanText(text) {
         if (!text) return '';
-        let cleaned = String(text);
-        cleaned = cleaned.replace(/<!DOCTYPE html>|<html>|<\/html>|<body>|<\/body>|<head>[\s\S]*?<\/head>/gi, '');
-        return cleaned.trim();
+        let t = String(text);
+        if (t.includes("limit exceeded") || t.includes("Please upgrade")) return "";
+        return t.replace(/<!DOCTYPE html>|<html>|<\/html>|<body>|<\/body>|<head>[\s\S]*?<\/head>/gi, '').trim();
+    }
+
+    function formatKlookDate(text) {
+        if (!text) return "";
+        const dateMatch = text.match(/Date\((\d+),(\d+),(\d+)/);
+        if (dateMatch) {
+            const month = parseInt(dateMatch[2]) + 1;
+            const day = dateMatch[3];
+            return `사용기간: ${month}월 ${day}일까지`;
+        }
+        const simpleDate = text.match(/(\d+)월\s*(\d+)일/);
+        if (simpleDate) return `사용기간: ${simpleDate[1]}월 ${simpleDate[2]}일까지`;
+        return text; 
+    }
+
+    function summarizeTermsNarrative(text) {
+        if (!text) return "";
+        const clean = text.replace(/\s+/g, " ");
+        const patterns = {
+            max: /최대\s*(?:할인\s*금액은?)?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|홍콩달러|만원|천원|HK))/i,
+            min: /최소\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|홍콩달러|만원|천원|HK))/i,
+            limited: /수량[은\s]*한정|제한되어|랏\s*소진/,
+            firstCome: /결제\s*순서|선착순/
+        };
+
+        const max = clean.match(patterns.max);
+        const min = clean.match(patterns.min);
+        const isLtd = patterns.limited.test(clean);
+        const isFc = patterns.firstCome.test(clean);
+        
+        let lines = [];
+        if (max) lines.push(`최대 할인액: ${max[1].trim()}`);
+        if (min) lines.push(`최소 구매금액: ${min[1].trim()}`);
+        if (isLtd || isFc) lines.push(`한정수량 쿠폰으로 할인혜택은 선착순으로 제공됩니다.`);
+        
+        return lines.join("\n");
+    }
+
+    function copyToClipboard(code) {
+        navigator.clipboard.writeText(code).then(() => {
+            alert('쿠폰 코드가 복사되었습니다: ' + code);
+        }).catch(err => {
+            console.error('복사 실패', err);
+        });
     }
 
     function renderDiscountValue(discountStr) {
@@ -49,22 +95,6 @@
         return `<span class="amount">${discountStr}</span>`;
     }
 
-    function formatSheetDate(dateStr) {
-        if (!dateStr || typeof dateStr !== 'string' || !dateStr.startsWith('Date(')) return dateStr;
-        try {
-            const params = dateStr.match(/\(([^)]+)\)/)[1].split(',').map(Number);
-            const date = new Date(params[0], params[1], params[2], params[3], params[4], params[5]);
-            date.setHours(date.getHours() - 1);
-            const now = new Date();
-            const diffDays = (date - now) / (1000 * 60 * 60 * 24);
-            if (diffDays >= 365) return "무제한";
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            return `${y}.${m}.${d}`;
-        } catch (e) { return dateStr; }
-    }
-
     function fetchData() {
         const script = document.createElement('script');
         script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleResponse&sheet=${encodeURIComponent(TAB_NAME)}`;
@@ -74,18 +104,21 @@
     window.handleResponse = function(response) {
         if (!response || !response.table) return;
         const rows = response.table.rows;
-        const coupons = rows.map(row => ({
-            discount: row.c[1] ? String(row.c[1].v) : '',
-            titleKo: row.c[18] ? String(row.c[18].v) : (row.c[2] ? String(row.c[2].v) : ''),
-            valid: row.c[7] ? String(row.c[7].v) : '',
-            termsKo: row.c[17] ? String(row.c[17].v) : (row.c[9] ? String(row.c[9].v) : ''),
-            banners: [
-                row.c[13] ? row.c[13].v : null,
-                row.c[14] ? row.c[14].v : null,
-                row.c[15] ? row.c[15].v : null,
-                row.c[16] ? row.c[16].v : null
-            ].filter(b => b !== null)
-        }));
+        const coupons = rows.map(row => {
+            let promoCode = row.c[0] ? String(row.c[0].v) : '';
+            let rawTitle = cleanText(row.c[18] ? row.c[18].v : "");
+            if (!rawTitle) rawTitle = cleanText(row.c[2] ? row.c[2].v : "특별 할인");
+            let rawTerms = cleanText(row.c[17] ? row.c[17].v : "");
+            let rawValid = cleanText(row.c[7] ? row.c[7].v : "");
+            return {
+                code: promoCode,
+                discount: row.c[1] ? String(row.c[1].v) : '',
+                title: rawTitle,
+                terms: summarizeTermsNarrative(rawTerms),
+                valid: formatKlookDate(rawValid),
+                banners: [row.c[13], row.c[14], row.c[15], row.c[16]].map(c => c ? c.v : null).filter(b => b)
+            };
+        });
         renderContent(coupons);
     };
 
@@ -95,7 +128,7 @@
         coupons.forEach(coupon => {
             const rowDiv = document.createElement('div');
             rowDiv.className = 'horizontal-row';
-            const couponHtml = `
+            rowDiv.innerHTML = `
                 <div class="coupon-card">
                     <div class="coupon-left">
                         ${renderDiscountValue(coupon.discount)}
@@ -103,25 +136,22 @@
                     </div>
                     <div class="coupon-info">
                         <span class="coupon-tag">특별 혜택</span>
-                        <h4>${cleanHtmlText(coupon.titleKo)}</h4>
-                        <p class="coupon-subtext">${cleanHtmlText(coupon.termsKo)}</p>
-                        <p class="coupon-valid">유효기간: ${formatSheetDate(coupon.valid)}</p>
+                        <h4>${coupon.title}</h4>
+                        <p class="coupon-subtext">${coupon.terms}</p>
+                        <p class="coupon-valid">${coupon.valid}</p>
+                        <button class="copy-btn" onclick="copyToClipboard('${coupon.code}')">할인쿠폰받기</button>
                     </div>
                 </div>
+                <div class="banner-container">
+                    ${coupon.banners.map(b => `<div class="dynamic-banner">${cleanText(b)}</div>`).join('')}
+                </div>
             `;
-            let bannerHtml = '<div class="banner-container">';
-            coupon.banners.forEach(html => {
-                bannerHtml += `<div class="dynamic-banner">${cleanHtmlText(html)}</div>`;
-            });
-            bannerHtml += '</div>';
-            rowDiv.innerHTML = couponHtml + bannerHtml;
             wrapper.appendChild(rowDiv);
             const scripts = rowDiv.getElementsByTagName('script');
-            for (let i = 0; i < scripts.length; i++) {
-                const newScript = document.createElement('script');
-                if (scripts[i].src) { newScript.src = scripts[i].src; }
-                else { newScript.textContent = scripts[i].textContent; }
-                document.body.appendChild(newScript);
+            for (let s of scripts) {
+                const ns = document.createElement('script');
+                if (s.src) ns.src = s.src; else ns.textContent = s.textContent;
+                document.body.appendChild(ns);
             }
         });
     }
