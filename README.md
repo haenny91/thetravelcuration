@@ -7,6 +7,17 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Pretendard', sans-serif; background-color: #f8f9fa; padding: 20px; }
+        .top3-section { width: 100%; max-width: 1000px; margin: 0 auto 40px auto; text-align: center; }
+        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; color: #111; text-align: left; }
+        .top3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .top3-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .top3-card:hover { transform: translateY(-5px); }
+        .slider-container { width: 100%; height: 200px; position: relative; overflow: hidden; background: #eee; }
+        .slider-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.8s ease-in-out; }
+        .slider-img.active { opacity: 1; }
+        .top3-info { padding: 15px; text-align: left; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .top3-title { font-size: 0.95rem; font-weight: 800; line-height: 1.4; margin-bottom: 10px; color: #111; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .top3-price { font-size: 1.1rem; font-weight: 900; color: #ff5b00; }
         .horizontal-row { width: 100%; max-width: 1200px; margin: 0 auto 30px auto; display: flex; gap: 12px; align-items: stretch; }
         .coupon-card { flex: 0 0 380px; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); position: relative; border: 1px solid #eee; }
         .coupon-left { background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%); color: white; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px; min-width: 120px; text-align: center; border-right: 2px dashed rgba(255,255,255,0.4); }
@@ -16,62 +27,61 @@
         .coupon-info { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; background: #fff; }
         .coupon-tag { font-size: 0.65rem; font-weight: 800; color: #ff5b00; margin-bottom: 6px; background: #fff0e9; padding: 2px 8px; border-radius: 4px; width: fit-content; }
         .coupon-info h4 { font-size: 1.05rem; color: #111; line-height: 1.3; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.03em; }
-        .coupon-subtext { font-size: 0.75rem; color: #666; line-height: 1.5; font-weight: 500; white-space: pre-line; }
+        .coupon-subtext { font-size: 0.75rem; color: #666; line-height: 1.5; font-weight: 500; white-space: pre-line; word-break: break-all; }
         .coupon-valid { font-size: 0.7rem; color: #ff5b00; margin-top: 8px; font-weight: 700; }
         .copy-btn { margin-top: 12px; background: #111; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: background 0.2s; width: fit-content; }
-        .copy-btn:active { background: #ff5b00; }
         .coupon-card::before, .coupon-card::after { content: ''; position: absolute; left: 110px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee; }
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
         .banner-container { flex: 1; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; }
-        .dynamic-banner { flex: 0 0 260px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; border: 1px solid #eee; min-height: 50px; }
+        .dynamic-banner { flex: 0 0 260px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; border: 1px solid #eee; }
         .dynamic-banner > div, .dynamic-banner a, .dynamic-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .pc-only-container { display: flex; gap: 12px; flex: 1; }
         .mobile-only-container { display: none; }
         @media (max-width: 1024px) {
+            .top3-grid { grid-template-columns: 1fr; }
             .horizontal-row { flex-direction: column; align-items: center; }
-            .coupon-card { width: 100%; max-width: 450px; flex: none; margin-bottom: 12px; }
-            .banner-container { width: 100%; max-width: 450px; flex-direction: column; gap: 12px; flex: none; }
+            .coupon-card, .banner-container { width: 100%; max-width: 450px; flex: none; }
             .pc-only-container { display: none; }
             .mobile-only-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
             .m-product-card { display: flex; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; text-decoration: none; color: inherit; height: 90px; align-items: center; }
-            .m-product-img { flex: 0 0 90px; height: 90px; object-fit: cover; background: #eee; }
+            .m-product-img { flex: 0 0 90px; height: 90px; object-fit: cover; }
             .m-product-info { padding: 10px 15px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-            .m-product-title { font-size: 0.85rem; font-weight: 700; color: #111; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 3px; }
-            .m-product-meta { font-size: 0.75rem; color: #666; display: flex; align-items: center; gap: 5px; }
-            .m-star { color: #ff5b00; }
-            .m-price { font-size: 0.9rem; font-weight: 800; color: #111; margin-top: 2px; }
+            .m-product-title { font-size: 0.85rem; font-weight: 700; color: #111; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+            .m-price { font-size: 0.9rem; font-weight: 800; color: #111; }
         }
     </style>
 </head>
 <body>
+<section class="top3-section">
+    <h3 class="section-title">🔥 실시간 인기 여행지 Top 3</h3>
+    <div id="top3Container" class="top3-grid"></div>
+</section>
 <div id="contentWrapper"></div>
+
 <script>
     const SHEET_ID = '1AACJ3r6VIcK2AH65wlJdLPP-7yJKTSW4Z-39msUgDu0';
-    const TAB_NAME = 'Home-Coupon List';
+
     function cleanText(text) {
         if (!text) return '';
-        let t = String(text);
-        if (t.includes("limit exceeded") || t.includes("Please upgrade")) return "";
-        return t.replace(/<!DOCTYPE html>|<html>|<\/html>|<body>|<\/body>|<head>[\s\S]*?<\/head>/gi, '').trim();
+        return String(text).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
     }
+
     function summarizeTermsNarrative(text) {
         if (!text) return "";
-        const clean = text.replace(/\s+/g, " ").trim();
+        const clean = String(text).replace(/\s+/g, " ").trim();
         const lines = [];
-        const minMatch = clean.match(/최소\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))/i);
+        const minMatch = clean.match(/(?:최소|이상)\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))/i) 
+                      || clean.match(/([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))\s*(?:이상|최소)/i);
         if (minMatch) lines.push(`최소 ${minMatch[1].trim()} 이상 결제 시 사용 가능합니다.`);
-        if (clean.includes("선착순") || clean.includes("소진 시") || clean.includes("한정")) {
+        if (clean.includes("선착순") || clean.includes("소진 시") || clean.includes("한정") || clean.includes("결제 순서")) {
             lines.push("선착순 한정 수량 쿠폰으로 비용 소진 시 사용이 불가할 수 있습니다.");
         }
-        if (clean.includes("앱에서 처음") || clean.includes("첫 예약")) {
+        if (clean.includes("앱에서 처음") || clean.includes("첫 예약") || clean.includes("앱 전용")) {
             lines.push("클룩 앱에서 첫 예약 시에만 사용 가능한 쿠폰입니다.");
         }
         if (clean.includes("계정당 1회") || clean.includes("1인당 1회") || clean.includes("당 1회")) {
             lines.push("계정당 1회에 한해 사용하실 수 있습니다.");
-        }
-        if (clean.includes("2인 이상 구매 시 1인 무료") || clean.includes("1+1")) {
-            lines.push("2인 이상 구매 시 1인 혜택이 무료로 적용됩니다(1+1).");
         }
         if (clean.includes("일부 상품 제외")) {
             lines.push("일부 상품은 쿠폰 적용 대상에서 제외될 수 있습니다.");
@@ -79,107 +89,100 @@
         if (clean.includes("중복 적용 불가") || clean.includes("중복 사용 불가")) {
             lines.push("다른 할인 혜택이나 프로모션과 중복 적용되지 않습니다.");
         }
-        if (lines.length === 0) return "";
-        return lines.join("\n");
+        return lines.length > 0 ? lines.join("\n") : "";
     }
+
     function formatKlookDate(text) {
         if (!text) return "";
-        const dateMatch = text.match(/Date\((\d+),(\d+),(\d+)/);
+        const dateMatch = String(text).match(/Date\((\d+),(\d+),(\d+)/);
         if (dateMatch) {
             const month = parseInt(dateMatch[2]) + 1;
             const day = dateMatch[3];
             return `사용기간: ${month}월 ${day}일까지`;
         }
-        return text; 
+        return String(text);
     }
+
     function copyToClipboard(code) {
-        navigator.clipboard.writeText(code).then(() => {
-            alert('쿠폰 코드가 복사되었습니다: ' + code);
-        });
+        navigator.clipboard.writeText(code).then(() => alert('쿠폰 코드가 복사되었습니다: ' + code));
     }
+
     function renderDiscountValue(discountStr) {
         if (!discountStr) return '';
-        const match = discountStr.match(/([a-zA-Z$]+|[^0-9\s,.]+)?\s*([0-9,.]+.*)/);
-        if (match) {
-            return `<span class="currency">${match[1] || ''}</span><span class="amount">${match[2] || ''}</span>`;
-        }
-        return `<span class="amount">${discountStr}</span>`;
+        const str = String(discountStr);
+        const match = str.match(/([a-zA-Z\$]+|[^0-9\s,.]+)?\s*([0-9,.]+.*)/);
+        return match ? `<span class="currency">${match[1] || ''}</span><span class="amount">${match[2] || ''}</span>` : `<span class="amount">${str}</span>`;
     }
+
     function fetchData() {
-        const script = document.createElement('script');
-        script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleResponse&sheet=${encodeURIComponent(TAB_NAME)}`;
-        document.body.appendChild(script);
+        const pushScript = document.createElement('script');
+        pushScript.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handlePushResponse&sheet=${encodeURIComponent('Home-Push Top3')}`;
+        document.body.appendChild(pushScript);
+        const couponScript = document.createElement('script');
+        couponScript.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleCouponResponse&sheet=${encodeURIComponent('Home-Coupon List')}`;
+        document.body.appendChild(couponScript);
     }
-    window.handleResponse = function(response) {
+
+    window.handlePushResponse = function(response) {
+        if (!response || !response.table) return;
+        const rows = response.table.rows.slice(0, 3);
+        const container = document.getElementById('top3Container');
+        rows.forEach((row, idx) => {
+            const title = row.c[0]?.v || '';
+            const price = row.c[1]?.v || '';
+            const url = row.c[2]?.v || '#';
+            const imgs = [];
+            for(let i=4; i<=8; i++) { if(row.c[i]?.v) imgs.push(row.c[i].v); }
+            const card = document.createElement('a');
+            card.href = url;
+            card.className = 'top3-card';
+            card.target = '_blank';
+            let imgHtml = imgs.map((img, i) => `<img src="${img}" class="slider-img img-set-${idx} ${i === 0 ? 'active' : ''}">`).join('');
+            card.innerHTML = `<div class="slider-container">${imgHtml}</div><div class="top3-info"><div class="top3-title">${title}</div><div class="top3-price">${price}</div></div>`;
+            container.appendChild(card);
+            if (imgs.length > 1) {
+                let currentImgIdx = 0;
+                setInterval(() => {
+                    const allImgs = card.querySelectorAll(`.img-set-${idx}`);
+                    allImgs[currentImgIdx].classList.remove('active');
+                    currentImgIdx = (currentImgIdx + 1) % imgs.length;
+                    allImgs[currentImgIdx].classList.add('active');
+                }, 3000);
+            }
+        });
+    };
+
+    window.handleCouponResponse = function(response) {
         if (!response || !response.table) return;
         const rows = response.table.rows;
-        const coupons = rows.map(row => {
-            return {
-                code: row.c[0] ? String(row.c[0].v) : '',
-                discount: row.c[1] ? String(row.c[1].v) : '',
-                title: cleanText(row.c[18] ? row.c[18].v : (row.c[2] ? row.c[2].v : "특별 할인")),
-                terms: row.c[17] ? summarizeTermsNarrative(cleanText(row.c[17].v)) : '',
-                valid: formatKlookDate(cleanText(row.c[7] ? row.c[7].v : "")),
-                pcBanners: [row.c[13], row.c[14], row.c[15], row.c[16]].map(c => c ? c.v : null).filter(b => b),
-                productImg: row.c[19] ? row.c[19].v : '', 
-                productTitle: row.c[2] ? row.c[2].v : '', 
-                rating: row.c[12] ? row.c[12].v : '', 
-                reviewCount: row.c[11] ? row.c[11].v : '', 
-                price: row.c[10] ? row.c[10].v : '', 
-                landingUrl: row.c[4] ? row.c[4].v : '#' 
-            };
-        });
-        renderContent(coupons);
-    };
-    function renderContent(coupons) {
         const wrapper = document.getElementById('contentWrapper');
-        wrapper.innerHTML = '';
-        coupons.forEach(coupon => {
+        rows.forEach(row => {
+            const coupon = {
+                code: row.c[0] ? String(row.c[0].v) : '',
+                discount: row.c[1] ? row.c[1].v : '',
+                title: cleanText(row.c[18] ? row.c[18].v : (row.c[2] ? row.c[2].v : "특별 할인")),
+                terms: row.c[17] ? summarizeTermsNarrative(row.c[17].v) : '',
+                valid: formatKlookDate(row.c[7] ? row.c[7].v : ""),
+                pcBanners: [row.c[13], row.c[14], row.c[15], row.c[16]].map(c => c ? c.v : null).filter(b => b),
+                productImg: row.c[19] ? row.c[19].v : '',
+                productTitle: row.c[2] ? row.c[2].v : '',
+                rating: row.c[12] ? row.c[12].v : '',
+                reviewCount: row.c[11] ? row.c[11].v : '',
+                price: row.c[10] ? row.c[10].v : '',
+                landingUrl: row.c[4] ? row.c[4].v : '#'
+            };
             const rowDiv = document.createElement('div');
             rowDiv.className = 'horizontal-row';
-            const ratingHtml = coupon.rating ? `<span class="m-star">★</span> ${coupon.rating}` : '';
-            const reviewHtml = coupon.reviewCount ? `(${coupon.reviewCount})` : '';
-            rowDiv.innerHTML = `
-                <div class="coupon-card">
-                    <div class="coupon-left">
-                        ${renderDiscountValue(coupon.discount)}
-                        <span class="unit">할인 혜택</span>
-                    </div>
-                    <div class="coupon-info">
-                        <span class="coupon-tag">특별 혜택</span>
-                        <h4 translate="no">${coupon.title}</h4>
-                        <p class="coupon-subtext" style="white-space: pre-line;">${coupon.terms}</p>
-                        <p class="coupon-valid">${coupon.valid}</p>
-                        <button class="copy-btn" onclick="copyToClipboard('${coupon.code}')">할인쿠폰받기</button>
-                    </div>
-                </div>
-                <div class="banner-container">
-                    <div class="pc-only-container">
-                        ${coupon.pcBanners.map(b => `<div class="dynamic-banner">${cleanText(b)}</div>`).join('')}
-                    </div>
-                    <div class="mobile-only-container">
-                        <a href="${coupon.landingUrl}" class="m-product-card" target="_blank">
-                            <img src="${coupon.productImg}" class="m-product-img" alt="${coupon.productTitle}" onerror="this.src='https://via.placeholder.com/90x90?text=Image'">
-                            <div class="m-product-info">
-                                <div>
-                                    <div class="m-product-title">${coupon.productTitle}</div>
-                                    <div class="m-product-meta">${ratingHtml} ${reviewHtml}</div>
-                                </div>
-                                <div class="m-price">${coupon.price}</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            `;
+            rowDiv.innerHTML = `<div class="coupon-card"><div class="coupon-left">${renderDiscountValue(coupon.discount)}<span class="unit">할인 혜택</span></div><div class="coupon-info"><span class="coupon-tag">특별 혜택</span><h4 translate="no">${coupon.title}</h4><p class="coupon-subtext">${coupon.terms}</p><p class="coupon-valid">${coupon.valid}</p><button class="copy-btn" onclick="event.preventDefault(); copyToClipboard('${coupon.code}')">할인쿠폰받기</button></div></div><div class="banner-container"><div class="pc-only-container">${coupon.pcBanners.map(b => `<div class="dynamic-banner">${b}</div>`).join('')}</div><div class="mobile-only-container"><a href="${coupon.landingUrl}" class="m-product-card" target="_blank"><img src="${coupon.productImg}" class="m-product-img"><div class="m-product-info"><div><div class="m-product-title">${coupon.productTitle}</div><div class="m-product-meta">★ ${coupon.rating} (${coupon.reviewCount})</div></div><div class="m-price">${coupon.price}</div></div></a></div></div>`;
             wrapper.appendChild(rowDiv);
-            const scripts = rowDiv.querySelectorAll('.pc-only-container script');
-            scripts.forEach(s => {
-                const ns = document.createElement('script');
-                if (s.src) ns.src = s.src; else ns.textContent = s.textContent;
-                document.body.appendChild(ns);
+            rowDiv.querySelectorAll('.pc-only-container script').forEach(oldScript => {
+                const newScript = document.createElement('script');
+                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                oldScript.parentNode.replaceChild(newScript, oldScript);
             });
         });
-    }
+    };
     window.onload = fetchData;
 </script>
 </body>
