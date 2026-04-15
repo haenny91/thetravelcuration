@@ -6,10 +6,16 @@
     <title>The Travel Curation</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Pretendard', sans-serif; background-color: #f8f9fa; padding: 10px; }
-        .top3-section { width: 100%; margin: 0 auto 40px auto; text-align: center; }
-        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; color: #111; text-align: left; padding-left: 5px; }
-        .top3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        /* 왼쪽 여백을 5px로 최소화 */
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8f9fa; padding: 10px 5px; }
+        
+        /* 너비 제한 해제 및 왼쪽 정렬 */
+        .top3-section { width: 100%; margin: 0 0 40px 0; text-align: left; }
+        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; color: #111; padding-left: 5px; }
+        
+        /* Top 3 그리드 너비 조정 */
+        .top3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 1200px; }
+        
         .top3-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.2s; }
         .top3-card:hover { transform: translateY(-5px); }
         .slider-container { width: 100%; height: 200px; position: relative; overflow: hidden; background: #eee; }
@@ -18,7 +24,10 @@
         .top3-info { padding: 15px; text-align: left; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .top3-title { font-size: 0.95rem; font-weight: 800; line-height: 1.4; margin-bottom: 10px; color: #111; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .top3-price { font-size: 1.1rem; font-weight: 900; color: #ff5b00; }
-        .horizontal-row { width: 100%; margin-bottom: 25px; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; }
+
+        /* 쿠폰 행 왼쪽 정렬 유지 및 너비 제한 해제 */
+        .horizontal-row { width: 100%; margin-bottom: 25px; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; } 
+        
         .coupon-card { flex: 0 0 380px; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); position: relative; border: 1px solid #eee; }
         .coupon-left { background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%); color: white; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px; min-width: 120px; text-align: center; border-right: 2px dashed rgba(255,255,255,0.4); }
         .coupon-left .currency { font-size: 0.9rem; font-weight: 700; opacity: 0.9; margin-bottom: 2px; }
@@ -30,16 +39,20 @@
         .coupon-subtext { font-size: 0.75rem; color: #666; line-height: 1.5; font-weight: 500; white-space: pre-line; word-break: break-all; }
         .coupon-valid { font-size: 0.7rem; color: #ff5b00; margin-top: 8px; font-weight: 700; }
         .copy-btn { margin-top: 12px; background: #111; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: background 0.2s; width: fit-content; }
+        
         .coupon-card::before, .coupon-card::after { content: ''; position: absolute; left: 110px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee; }
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
-        .banner-container { flex: 1; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; }
-        .dynamic-banner { flex: 1; min-width: 200px; max-width: 300px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; border: 1px solid #eee; }
+
+        .banner-container { flex: 0 1 auto; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; }
+        .dynamic-banner { flex: 0 0 260px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; border: 1px solid #eee; }
         .dynamic-banner > div, .dynamic-banner a, .dynamic-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .pc-only-container { display: flex; gap: 12px; flex: 1; }
+        
+        .pc-only-container { display: flex; gap: 12px; }
         .mobile-only-container { display: none; }
+
         @media (max-width: 1024px) {
-            .top3-grid { grid-template-columns: 1fr; }
+            .top3-grid { grid-template-columns: 1fr; max-width: 100%; margin: 0; }
             .horizontal-row { flex-direction: column; align-items: flex-start; }
             .coupon-card, .banner-container { width: 100%; max-width: 100%; flex: none; }
             .pc-only-container { display: none; }
