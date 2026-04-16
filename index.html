@@ -81,7 +81,6 @@
 
     function cleanText(text) { return !text ? '' : String(text).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); }
     
-    // 쿠폰 요약 로직 (사용자 요청 텍스트 반영)
     function summarizeTermsNarrative(text) {
         if (!text) return "";
         const clean = String(text).replace(/\s+/g, " ").trim();
@@ -129,17 +128,18 @@
     function copyToClipboard(code) { navigator.clipboard.writeText(code).then(() => alert('코드가 복사되었습니다: ' + code)); }
 
     function fetchData() {
+        const timestamp = Date.now();
         const pushScript = document.createElement('script');
-        pushScript.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handlePushResponse&sheet=${encodeURIComponent('Home-Push Top3')}`;
+        pushScript.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handlePushResponse&sheet=${encodeURIComponent('Home-Push Top3')}&t=${timestamp}`;
         document.body.appendChild(pushScript);
         const couponScript = document.createElement('script');
-        couponScript.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleCouponResponse&sheet=${encodeURIComponent('Home-Coupon List')}`;
+        couponScript.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleCouponResponse&sheet=${encodeURIComponent('Home-Coupon List')}&t=${timestamp}`;
         document.body.appendChild(couponScript);
     }
 
     window.handlePushResponse = function(response) {
         if (!response || !response.table) return;
-        const rows = response.table.rows.slice(0, 3);
+        const rows = response.table.rows.slice(1, 4);
         const container = document.getElementById('top3Container');
         container.innerHTML = '';
         rows.forEach((row, idx) => {
@@ -162,7 +162,6 @@
                 </div>`;
             container.appendChild(card);
 
-            // 이미지 롤링 로직 (1.5초 간격으로 수정)
             if (imgs.length > 1) {
                 let currentIdx = 0;
                 setInterval(() => {
@@ -170,14 +169,14 @@
                     allImgs[currentIdx].classList.remove('active');
                     currentIdx = (currentIdx + 1) % allImgs.length;
                     allImgs[currentIdx].classList.add('active');
-                }, 1500); // 1500ms = 1.5초
+                }, 1500);
             }
         });
     };
 
     window.handleCouponResponse = function(response) {
         if (!response || !response.table) return;
-        const rows = response.table.rows;
+        const rows = response.table.rows.slice(1);
         const wrapper = document.getElementById('contentWrapper');
         wrapper.innerHTML = '';
         rows.forEach(row => {
