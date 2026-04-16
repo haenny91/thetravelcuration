@@ -87,17 +87,10 @@
         const lines = [];
         const minMatch = clean.match(/(?:최소|이상)\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))/i) || 
                          clean.match(/([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))\s*(?:이상|최소)/i);
-        
         if (minMatch) lines.push(`최소 ${minMatch[1].trim()} 이상 결제 시 사용 가능합니다.`);
-        if (clean.includes("선착순") || clean.includes("소진 시") || clean.includes("한정") || clean.includes("결제 순서")) {
-            lines.push("한정 수량으로 조기 종료될 수 있습니다.");
-        }
-        if (clean.includes("앱에서 처음") || clean.includes("첫 예약") || clean.includes("앱 전용")) {
-            lines.push("앱 첫 예약 시 사용 가능합니다.");
-        }
-        if (clean.includes("계정당 1회") || clean.includes("1인당 1회")) {
-            lines.push("계정당 1회 사용 가능합니다.");
-        }
+        if (clean.includes("선착순") || clean.includes("소진 시") || clean.includes("한정") || clean.includes("결제 순서")) lines.push("한정 수량으로 조기 종료될 수 있습니다.");
+        if (clean.includes("앱에서 처음") || clean.includes("첫 예약") || clean.includes("앱 전용")) lines.push("앱 첫 예약 시 사용 가능합니다.");
+        if (clean.includes("계정당 1회") || clean.includes("1인당 1회")) lines.push("계정당 1회 사용 가능합니다.");
         return lines.length > 0 ? lines.join("\n") : "";
     }
 
@@ -139,29 +132,23 @@
 
     window.handlePushResponse = function(response) {
         if (!response || !response.table) return;
-        const rows = response.table.rows.slice(1, 4);
+        const rows = response.table.rows.filter(row => {
+            if (!row.c || !row.c[0]) return false;
+            const firstCell = String(row.c[0].v || '').trim();
+            return firstCell !== '' && !firstCell.includes('Promo code');
+        }).slice(0, 3);
         const container = document.getElementById('top3Container');
         container.innerHTML = '';
-        rows.forEach((row, idx) => {
+        rows.forEach((row) => {
             const title = row.c[1]?.v || ''; 
             const price = formatTop3Price(row.c[3]?.v || '');
             const url = row.c[10]?.v || '#';
             const imgs = []; for(let i=5; i<=9; i++) { if(row.c[i]?.v) imgs.push(row.c[i].v); }
-            const descLines = (row.c[2]?.v || '').split('\n').map(l => l.replace(/^[\s\-"•]+|[\s\-"]+$/g, '').trim()).filter(l => l !== '');
-            
+            const descLines = (row.c[2]?.v || '').split('\n').map(l => l.trim()).filter(l => l !== '');
             const card = document.createElement('a');
             card.href = url; card.className = 'top3-card'; card.target = '_blank';
-            card.innerHTML = `
-                <div class="slider-container">
-                    ${imgs.map((img, i) => `<img src="${img}" class="slider-img ${i === 0 ? 'active' : ''}">`).join('')}
-                </div>
-                <div class="top3-info">
-                    <div class="top3-title">${title}</div>
-                    <ul class="top3-features">${descLines.map(l => `<li>${l}</li>`).join('')}</ul>
-                    <div class="top3-price">${price}~</div>
-                </div>`;
+            card.innerHTML = `<div class="slider-container">${imgs.map((img, i) => `<img src="${img}" class="slider-img ${i === 0 ? 'active' : ''}">`).join('')}</div><div class="top3-info"><div class="top3-title">${title}</div><ul class="top3-features">${descLines.map(l => `<li>${l}</li>`).join('')}</ul><div class="top3-price">${price}~</div></div>`;
             container.appendChild(card);
-
             if (imgs.length > 1) {
                 let currentIdx = 0;
                 setInterval(() => {
@@ -176,17 +163,22 @@
 
     window.handleCouponResponse = function(response) {
         if (!response || !response.table) return;
-        const rows = response.table.rows.slice(1);
+        const rows = response.table.rows.filter(row => {
+            if (!row.c || !row.c[0]) return false;
+            const firstCell = String(row.c[0].v || '').trim();
+            const secondCell = String(row.c[2]?.v || '').trim();
+            return firstCell !== '' && !firstCell.includes('Promo code') && !secondCell.includes('descriptions');
+        });
         const wrapper = document.getElementById('contentWrapper');
         wrapper.innerHTML = '';
         rows.forEach(row => {
-            const pcBanners = [row.c[13], row.c[14], row.c[15], row.c[16]].map(c => c ? c.v : null).filter(b => b);
+            const pcBanners = [row.c[13], row.c[14], row.c[15], row.c[16]].map(c => (c && c.v) ? String(c.v) : null).filter(b => b && b.trim() !== '');
             const coupon = {
                 code: row.c[0] ? String(row.c[0].v) : '',
                 discount: row.c[1] ? row.c[1].v : '',
                 title: cleanText(row.c[18]?.v || row.c[2]?.v || "특별 할인"),
                 terms: row.c[17] ? summarizeTermsNarrative(row.c[17].v) : '',
-                valid: formatKlookDate(row.c[7]?.v || ""),
+                valid: row.c[7] ? (row.c[7].f || formatKlookDate(row.c[7].v)) : "",
                 productImg: row.c[19]?.v || '',
                 productTitle: row.c[2]?.v || '',
                 rating: row.c[12]?.v || '',
@@ -194,14 +186,11 @@
                 price: row.c[10]?.v || '',
                 landingUrl: row.c[4]?.v || '#'
             };
-
             const rowDiv = document.createElement('div');
             rowDiv.className = 'horizontal-row';
             const bannerHtml = pcBanners.map(b => `<div class="dynamic-banner">${b}</div>`).join('');
-
             rowDiv.innerHTML = `<div class="coupon-card"><div class="coupon-left">${renderDiscountValue(coupon.discount)}<span class="unit">할인 혜택</span></div><div class="coupon-info"><span class="coupon-tag">발품 팔아 모은 혜택</span><h4 translate="no">${coupon.title}</h4><p class="coupon-subtext">${coupon.terms}</p><p class="coupon-valid">${coupon.valid}</p><button class="copy-btn" onclick="event.preventDefault(); copyToClipboard('${coupon.code}')">코드 복사하기</button></div></div><div class="banner-container"><div class="pc-only-container">${bannerHtml}</div><div class="mobile-only-container"><a href="${coupon.landingUrl}" class="m-product-card" target="_blank"><img src="${coupon.productImg}" class="m-product-img"><div class="m-product-info"><div><div class="m-product-title">${coupon.productTitle}</div><div class="m-product-meta">★ ${coupon.rating} (${coupon.reviewCount})</div></div><div class="m-price">${coupon.price}</div></div></a></div></div>`;
             wrapper.appendChild(rowDiv);
-
             const pcContainer = rowDiv.querySelector('.pc-only-container');
             pcContainer.querySelectorAll('script').forEach(oldS => {
                 const newS = document.createElement('script');
