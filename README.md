@@ -5,10 +5,40 @@
     <title>The Travel Curation</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8f9fa; padding: 10px 5px; }
-        .top3-section { width: 100%; margin: 0 0 40px 0; text-align: left; }
-        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; color: #111; padding-left: 5px; }
-        .top3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 1200px; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8f9fa; padding: 0 0 20px 0; }
+
+        header {
+            background-color: #fff;
+            padding: 30px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 35px;
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .header-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #000;
+            letter-spacing: -0.04em;
+            text-transform: lowercase;
+            line-height: 1;
+        }
+        .header-slogan {
+            font-size: 0.85rem;
+            color: #999;
+            font-weight: 300;
+            letter-spacing: -0.01em;
+            word-break: keep-all;
+            line-height: 1;
+        }
+
+        .top3-section { width: 100%; max-width: 1200px; margin: 0 auto 40px auto; padding: 0 15px; }
+        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; color: #111; }
+        .top3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .top3-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.2s; height: 100%; }
         .top3-card:hover { transform: translateY(-5px); }
         .slider-container { width: 100%; height: 200px; position: relative; overflow: hidden; background: #eee; }
@@ -21,7 +51,8 @@
         .top3-features li { font-size: 0.85rem; color: #555; line-height: 1.6; position: relative; padding-left: 14px; margin-bottom: 6px; word-break: keep-all; }
         .top3-features li::before { content: "•"; position: absolute; left: 0; color: #ff5b00; font-weight: bold; }
         .top3-price { font-size: 1.2rem; font-weight: 900; color: #ff5b00; text-align: right; border-top: 1px solid #f1f1f1; padding-top: 12px; margin-top: auto; }
-        .horizontal-row { width: 100%; margin-bottom: 25px; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; } 
+
+        .horizontal-row { width: 100%; max-width: 1200px; margin: 0 auto 25px auto; padding: 0 15px; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; } 
         .coupon-card { flex: 0 0 380px; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border: 1px solid #eee; }
         .coupon-left { background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%); color: white; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px; min-width: 120px; text-align: center; border-right: 2px dashed rgba(255,255,255,0.4); }
         .coupon-left .currency { font-size: 0.9rem; font-weight: 700; opacity: 0.9; margin-bottom: 2px; }
@@ -36,12 +67,16 @@
         .coupon-card::before, .coupon-card::after { content: ''; position: absolute; left: 110px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee; }
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
-        .banner-container { flex: 0 1 auto; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; }
+        .banner-container { flex: 1; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; }
         .dynamic-banner { flex: 0 0 260px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; border: 1px solid #eee; }
         .dynamic-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .pc-only-container { display: flex; gap: 12px; }
         .mobile-only-container { display: none; }
+
         @media (max-width: 1024px) {
+            header { padding: 20px 15px; flex-direction: column; gap: 5px; align-items: flex-start; }
+            .header-logo { font-size: 1.6rem; }
+            .header-slogan { font-size: 0.75rem; }
             .top3-grid { grid-template-columns: 1fr; }
             .horizontal-row { flex-direction: column; align-items: flex-start; }
             .coupon-card, .banner-container { width: 100%; max-width: 100%; flex: none; }
@@ -56,6 +91,11 @@
     </style>
 </head>
 <body>
+
+<header>
+    <h1 class="header-logo">thetravelcuration</h1>
+    <p class="header-slogan">여행자의, 여행자에 의한, 여행자를 위한 감도 높은 여행큐레이션</p>
+</header>
 
 <section class="top3-section">
     <h3 class="section-title">✨ 이것만은 꼭, 큐레이터 픽 TOP3</h3>
