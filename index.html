@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>TheTravelCuration</title>
+    <title>thetravelcuration</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8f9fa; padding: 0 0 20px 0; color: #333; }
@@ -169,7 +169,7 @@
             const title = row.c[1]?.v || ''; 
             const rawDesc = row.c[2]?.v || ''; 
             const price = formatTop3Price(row.c[3]?.v || '');
-            const url = row.c[4]?.v || '#';
+            const url = row.c[10]?.v || '#';
             const descLines = rawDesc.split('\n').map(line => line.replace(/^[\s\-"•]+|[\s\-"]+$/g, '').trim()).filter(line => line !== '');
             const featureHtml = descLines.map(line => `<li>${line}</li>`).join('');
             const imgs = [];
