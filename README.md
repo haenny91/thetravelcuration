@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -6,29 +6,24 @@
     <title>The Travel Curation</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        /* 왼쪽 여백을 5px로 최소화 */
-        body { font-family: 'Pretendard', sans-serif; background-color: #f8f9fa; padding: 10px 5px; }
-        
-        /* 너비 제한 해제 및 왼쪽 정렬 */
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8f9fa; padding: 10px 5px; }
         .top3-section { width: 100%; margin: 0 0 40px 0; text-align: left; }
         .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; color: #111; padding-left: 5px; }
-        
-        /* Top 3 그리드 너비 조정 */
         .top3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 1200px; }
-        
-        .top3-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .top3-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.2s; height: 100%; }
         .top3-card:hover { transform: translateY(-5px); }
         .slider-container { width: 100%; height: 200px; position: relative; overflow: hidden; background: #eee; }
         .slider-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.8s ease-in-out; }
         .slider-img.active { opacity: 1; }
-        .top3-info { padding: 15px; text-align: left; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .top3-title { font-size: 0.95rem; font-weight: 800; line-height: 1.4; margin-bottom: 10px; color: #111; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .top3-price { font-size: 1.1rem; font-weight: 900; color: #ff5b00; }
-
-        /* 쿠폰 행 왼쪽 정렬 유지 및 너비 제한 해제 */
+        .top3-info { padding: 18px; flex-grow: 1; display: flex; flex-direction: column; }
+        .top3-title { font-size: 1.1rem; font-weight: 800; line-height: 1.4; margin-bottom: 12px; color: #111; }
+        .top3-desc-container { margin-bottom: 15px; flex-grow: 1; }
+        .top3-features { list-style: none; padding: 0; margin: 0; }
+        .top3-features li { font-size: 0.85rem; color: #555; line-height: 1.6; position: relative; padding-left: 14px; margin-bottom: 6px; word-break: keep-all; }
+        .top3-features li::before { content: "•"; position: absolute; left: 0; color: #ff5b00; font-weight: bold; }
+        .top3-price { font-size: 1.2rem; font-weight: 900; color: #ff5b00; text-align: right; border-top: 1px solid #f1f1f1; padding-top: 12px; margin-top: auto; }
         .horizontal-row { width: 100%; margin-bottom: 25px; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; } 
-        
-        .coupon-card { flex: 0 0 380px; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); position: relative; border: 1px solid #eee; }
+        .coupon-card { flex: 0 0 380px; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border: 1px solid #eee; }
         .coupon-left { background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%); color: white; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px; min-width: 120px; text-align: center; border-right: 2px dashed rgba(255,255,255,0.4); }
         .coupon-left .currency { font-size: 0.9rem; font-weight: 700; opacity: 0.9; margin-bottom: 2px; }
         .coupon-left .amount { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.05em; line-height: 1; }
@@ -39,20 +34,16 @@
         .coupon-subtext { font-size: 0.75rem; color: #666; line-height: 1.5; font-weight: 500; white-space: pre-line; word-break: break-all; }
         .coupon-valid { font-size: 0.7rem; color: #ff5b00; margin-top: 8px; font-weight: 700; }
         .copy-btn { margin-top: 12px; background: #111; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: background 0.2s; width: fit-content; }
-        
         .coupon-card::before, .coupon-card::after { content: ''; position: absolute; left: 110px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee; }
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
-
         .banner-container { flex: 0 1 auto; display: flex; gap: 12px; align-items: stretch; justify-content: flex-start; }
         .dynamic-banner { flex: 0 0 260px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; border: 1px solid #eee; }
-        .dynamic-banner > div, .dynamic-banner a, .dynamic-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        
+        .dynamic-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .pc-only-container { display: flex; gap: 12px; }
         .mobile-only-container { display: none; }
-
         @media (max-width: 1024px) {
-            .top3-grid { grid-template-columns: 1fr; max-width: 100%; margin: 0; }
+            .top3-grid { grid-template-columns: 1fr; }
             .horizontal-row { flex-direction: column; align-items: flex-start; }
             .coupon-card, .banner-container { width: 100%; max-width: 100%; flex: none; }
             .pc-only-container { display: none; }
@@ -66,8 +57,9 @@
     </style>
 </head>
 <body>
+
 <section class="top3-section">
-    <h3 class="section-title">🔥 실시간 인기 여행지 Top 3</h3>
+    <h3 class="section-title">✨ 이것만은 꼭, 큐레이터 픽 TOP3</h3>
     <div id="top3Container" class="top3-grid"></div>
 </section>
 <div id="contentWrapper"></div>
@@ -75,56 +67,48 @@
 <script>
     const SHEET_ID = '1AACJ3r6VIcK2AH65wlJdLPP-7yJKTSW4Z-39msUgDu0';
 
-    function cleanText(text) {
-        if (!text) return '';
-        return String(text).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    function formatTop3Price(val) {
+        if (!val) return "";
+        let str = String(val).trim();
+        let numStr = str.replace(/[^0-9.-]+/g, "");
+        let num = parseFloat(numStr);
+        if (isNaN(num)) return str;
+        if (str.includes('$') || str.toUpperCase().includes('USD')) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+        } else {
+            return new Intl.NumberFormat('ko-KR').format(num) + "원";
+        }
     }
 
+    function cleanText(text) { return !text ? '' : String(text).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); }
+    
     function summarizeTermsNarrative(text) {
         if (!text) return "";
         const clean = String(text).replace(/\s+/g, " ").trim();
         const lines = [];
-        const minMatch = clean.match(/(?:최소|이상)\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))/i) 
-                      || clean.match(/([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))\s*(?:이상|최소)/i);
+        const minMatch = clean.match(/(?:최소|이상)\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))/i) || clean.match(/([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))\s*(?:이상|최소)/i);
         if (minMatch) lines.push(`최소 ${minMatch[1].trim()} 이상 결제 시 사용 가능합니다.`);
-        if (clean.includes("선착순") || clean.includes("소진 시") || clean.includes("한정") || clean.includes("결제 순서")) {
-            lines.push("선착순 한정 수량 쿠폰으로 비용 소진 시 사용이 불가할 수 있습니다.");
-        }
-        if (clean.includes("앱에서 처음") || clean.includes("첫 예약") || clean.includes("앱 전용")) {
-            lines.push("클룩 앱에서 첫 예약 시에만 사용 가능한 쿠폰입니다.");
-        }
-        if (clean.includes("계정당 1회") || clean.includes("1인당 1회") || clean.includes("당 1회")) {
-            lines.push("계정당 1회에 한해 사용하실 수 있습니다.");
-        }
-        if (clean.includes("일부 상품 제외")) {
-            lines.push("일부 상품은 쿠폰 적용 대상에서 제외될 수 있습니다.");
-        }
-        if (clean.includes("중복 적용 불가") || clean.includes("중복 사용 불가")) {
-            lines.push("다른 할인 혜택이나 프로모션과 중복 적용되지 않습니다.");
-        }
+        if (clean.includes("선착순") || clean.includes("소진 시") || clean.includes("한정") || clean.includes("결제 순서")) lines.push("선착순 한정 수량 쿠폰으로 비용 소진 시 사용이 불가할 수 있습니다.");
+        if (clean.includes("앱에서 처음") || clean.includes("첫 예약") || clean.includes("앱 전용")) lines.push("클룩 앱에서 첫 예약 시에만 사용 가능한 쿠폰입니다.");
+        if (clean.includes("계정당 1회") || clean.includes("1인당 1회") || clean.includes("당 1회")) lines.push("계정당 1회에 한해 사용하실 수 있습니다.");
+        if (clean.includes("일부 상품 제외")) lines.push("일부 상품은 쿠폰 적용 대상에서 제외될 수 있습니다.");
+        if (clean.includes("중복 적용 불가")) lines.push("다른 할인 혜택과 중복 적용되지 않습니다.");
         return lines.length > 0 ? lines.join("\n") : "";
     }
 
     function formatKlookDate(text) {
         if (!text) return "";
         const dateMatch = String(text).match(/Date\((\d+),(\d+),(\d+)/);
-        if (dateMatch) {
-            const month = parseInt(dateMatch[2]) + 1;
-            const day = dateMatch[3];
-            return `사용기간: ${month}월 ${day}일까지`;
-        }
+        if (dateMatch) { return `사용기간: ${parseInt(dateMatch[2]) + 1}월 ${dateMatch[3]}일까지`; }
         return String(text);
     }
 
-    function copyToClipboard(code) {
-        navigator.clipboard.writeText(code).then(() => alert('쿠폰 코드가 복사되었습니다: ' + code));
-    }
+    function copyToClipboard(code) { navigator.clipboard.writeText(code).then(() => alert('쿠폰 코드가 복사되었습니다: ' + code)); }
 
     function renderDiscountValue(discountStr) {
         if (!discountStr) return '';
-        const str = String(discountStr);
-        const match = str.match(/([a-zA-Z\$]+|[^0-9\s,.]+)?\s*([0-9,.]+.*)/);
-        return match ? `<span class="currency">${match[1] || ''}</span><span class="amount">${match[2] || ''}</span>` : `<span class="amount">${str}</span>`;
+        const match = String(discountStr).match(/([a-zA-Z\$]+|[^0-9\s,.]+)?\s*([0-9,.]+.*)/);
+        return match ? `<span class="currency">${match[1] || ''}</span><span class="amount">${match[2] || ''}</span>` : `<span class="amount">${discountStr}</span>`;
     }
 
     function fetchData() {
@@ -140,26 +124,30 @@
         if (!response || !response.table) return;
         const rows = response.table.rows.slice(0, 3);
         const container = document.getElementById('top3Container');
+        container.innerHTML = '';
         rows.forEach((row, idx) => {
-            const title = row.c[0]?.v || '';
-            const price = row.c[1]?.v || '';
-            const url = row.c[2]?.v || '#';
+            const title = row.c[1]?.v || ''; 
+            const rawDesc = row.c[2]?.v || ''; 
+            const price = formatTop3Price(row.c[3]?.v || '');
+            const url = row.c[4]?.v || '#';
+            const descLines = rawDesc.split('\n').map(line => line.replace(/^[\s\-"•]+|[\s\-"]+$/g, '').trim()).filter(line => line !== '');
+            const featureHtml = descLines.map(line => `<li>${line}</li>`).join('');
             const imgs = [];
-            for(let i=4; i<=8; i++) { if(row.c[i]?.v) imgs.push(row.c[i].v); }
+            for(let i=5; i<=9; i++) { if(row.c[i]?.v) imgs.push(row.c[i].v); }
             const card = document.createElement('a');
-            card.href = url;
-            card.className = 'top3-card';
-            card.target = '_blank';
+            card.href = url; card.className = 'top3-card'; card.target = '_blank';
             let imgHtml = imgs.map((img, i) => `<img src="${img}" class="slider-img img-set-${idx} ${i === 0 ? 'active' : ''}">`).join('');
-            card.innerHTML = `<div class="slider-container">${imgHtml}</div><div class="top3-info"><div class="top3-title">${title}</div><div class="top3-price">${price}</div></div>`;
+            card.innerHTML = `<div class="slider-container">${imgHtml}</div><div class="top3-info"><div class="top3-title">${title}</div><div class="top3-desc-container"><ul class="top3-features">${featureHtml}</ul></div><div class="top3-price">${price}~</div></div>`;
             container.appendChild(card);
             if (imgs.length > 1) {
                 let currentImgIdx = 0;
                 setInterval(() => {
                     const allImgs = card.querySelectorAll(`.img-set-${idx}`);
-                    allImgs[currentImgIdx].classList.remove('active');
-                    currentImgIdx = (currentImgIdx + 1) % imgs.length;
-                    allImgs[currentImgIdx].classList.add('active');
+                    if(allImgs.length > 0) {
+                        allImgs[currentImgIdx].classList.remove('active');
+                        currentImgIdx = (currentImgIdx + 1) % imgs.length;
+                        allImgs[currentImgIdx].classList.add('active');
+                    }
                 }, 3000);
             }
         });
