@@ -3,14 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Thetravelcuration</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8f9fa; padding: 0 0 20px 0; color: #000; }
+
+        .main-title-area {
+            max-width: 1200px;
+            margin: 40px auto 35px auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            justify-content: flex-start;
+        }
         .logo-text {
             font-size: 1.8rem;
             font-weight: 900;
-            color: #000;
+            color: #000 !important;
+            text-decoration: none !important;
             letter-spacing: -0.04em;
             text-transform: lowercase;
             line-height: 1;
+            display: inline-block;
         }
         .slogan-text {
             font-size: 0.85rem;
