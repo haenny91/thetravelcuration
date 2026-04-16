@@ -4,15 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <style>
-        .main-title-area {
-            max-width: 1200px;
-            margin: 40px auto 35px auto;
-            padding: 0 20px;
-            display: flex;
-            align-items: baseline;
-            gap: 15px;
-            justify-content: flex-start;
-        }
         .logo-text {
             font-size: 1.8rem;
             font-weight: 900;
