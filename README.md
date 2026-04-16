@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>thetravelcuration</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8f9fa; padding: 0 0 20px 0; color: #333; }
-
         .main-title-area {
             max-width: 1200px;
             margin: 40px auto 35px auto;
