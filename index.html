@@ -39,9 +39,9 @@
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
         .banner-container { flex: 1; display: flex; gap: 12px; align-items: stretch; }
-        .dynamic-banner { flex: 0 0 260px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; position: relative; }
-        .dynamic-banner video, .dynamic-banner img, .dynamic-banner iframe { width: 100%; height: 100%; object-fit: cover; display: block; border: none; }
-        .pc-only-container { display: flex; gap: 12px; width: 100%; }
+        .pc-only-container { display: flex; gap: 12px; width: 100%; align-items: stretch; }
+        .dynamic-banner { flex: 0 0 260px; height: 180px; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #eee; }
+        .dynamic-banner video, .dynamic-banner img, .dynamic-banner iframe { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block; border: none; }
         .mobile-only-container { display: none; }
         @media (max-width: 1024px) {
             .main-title-area { margin: 25px auto 20px auto; padding: 0 15px; flex-direction: column; gap: 6px; }
@@ -86,7 +86,7 @@
         const clean = String(text).replace(/\s+/g, " ").trim();
         const lines = [];
         const minMatch = clean.match(/(?:최소|이상)\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))/i) || 
-                         clean.match(/([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))\s*(?:이상|최소)/i);
+                       clean.match(/([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|홍콩달러))\s*(?:이상|최소)/i);
         if (minMatch) lines.push(`최소 ${minMatch[1].trim()} 이상 결제 시 사용 가능합니다.`);
         if (clean.includes("선착순") || clean.includes("소진 시") || clean.includes("한정") || clean.includes("결제 순서")) lines.push("한정 수량으로 조기 종료될 수 있습니다.");
         if (clean.includes("앱에서 처음") || clean.includes("첫 예약") || clean.includes("앱 전용")) lines.push("앱 첫 예약 시 사용 가능합니다.");
@@ -123,22 +123,25 @@
     function createMediaHtml(rawData) {
         if (!rawData) return '';
         let data = String(rawData).trim();
+        
+        if (data.toLowerCase().includes('<a') || data.toLowerCase().includes('<img') || data.toLowerCase().includes('<div')) {
+            return data;
+        }
+
+        let innerContent = "";
         if (data.includes('drive.google.com')) {
             let fileId = "";
             if (data.includes('/d/')) fileId = data.split('/d/')[1].split('/')[0];
             else if (data.includes('id=')) fileId = data.split('id=')[1].split('&')[0];
-            if (fileId) {
-                // autoplay=1 파라미터를 추가하고 iframe 속성에 allow="autoplay"를 명시해야 합니다.
-                return `<iframe src="https://drive.google.com/file/d/${fileId}/preview?autoplay=1" allow="autoplay; fullscreen"></iframe>`;
-            }
+            innerContent = `<iframe src="https://drive.google.com/file/d/${fileId}/preview" allow="autoplay; fullscreen"></iframe>`;
+        } 
+        else if (data.toLowerCase().endsWith('.mp4')) {
+            innerContent = `<video src="${data}" autoplay loop muted playsinline></video>`;
+        } 
+        else {
+            innerContent = `<img src="${data}" alt="banner">`;
         }
-        if (data.toLowerCase().endsWith('.mp4')) {
-            return `<video src="${data}" autoplay loop muted playsinline></video>`;
-        }
-        if (data.match(/\.(jpeg|jpg|gif|png|webp)/i)) {
-            return `<img src="${data}" alt="banner">`;
-        }
-        return data;
+        return `<div class="dynamic-banner">${innerContent}</div>`;
     }
 
     function fetchData() {
@@ -202,7 +205,7 @@
             };
             const rowDiv = document.createElement('div');
             rowDiv.className = 'horizontal-row';
-            const bannerHtml = rawBanners.map(b => `<div class="dynamic-banner">${createMediaHtml(b)}</div>`).join('');
+            const bannerHtml = rawBanners.map(b => createMediaHtml(b)).join('');
             rowDiv.innerHTML = `<div class="coupon-card"><div class="coupon-left">${renderDiscountValue(coupon.discount)}<span class="unit">할인 혜택</span></div><div class="coupon-info"><span class="coupon-tag">발품 팔아 모은 혜택</span><h4 translate="no">${coupon.title}</h4><p class="coupon-subtext">${coupon.terms}</p><p class="coupon-valid">${coupon.valid}</p><button class="copy-btn" onclick="event.preventDefault(); copyToClipboard('${coupon.code}')">코드 복사하기</button></div></div><div class="banner-container"><div class="pc-only-container">${bannerHtml}</div><div class="mobile-only-container"><a href="${coupon.landingUrl}" class="m-product-card" target="_blank"><img src="${coupon.productImg}" class="m-product-img"><div class="m-product-info"><div><div class="m-product-title">${coupon.productTitle}</div><div class="m-product-meta">★ ${coupon.rating} (${coupon.reviewCount})</div></div><div class="m-price">${coupon.price}</div></div></a></div></div>`;
             wrapper.appendChild(rowDiv);
             const pcContainer = rowDiv.querySelector('.pc-only-container');
