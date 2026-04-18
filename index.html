@@ -39,8 +39,8 @@
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
         .banner-container { flex: 1; display: flex; gap: 12px; align-items: stretch; }
-        .dynamic-banner { flex: 0 0 260px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; }
-        .dynamic-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .dynamic-banner { flex: 0 0 260px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; position: relative; }
+        .dynamic-banner video, .dynamic-banner img, .dynamic-banner iframe { width: 100%; height: 100%; object-fit: cover; display: block; border: none; }
         .pc-only-container { display: flex; gap: 12px; width: 100%; }
         .mobile-only-container { display: none; }
         @media (max-width: 1024px) {
@@ -120,6 +120,27 @@
 
     function copyToClipboard(code) { navigator.clipboard.writeText(code).then(() => alert('코드가 복사되었습니다: ' + code)); }
 
+    function createMediaHtml(rawData) {
+        if (!rawData) return '';
+        let data = String(rawData).trim();
+        if (data.includes('drive.google.com')) {
+            let fileId = "";
+            if (data.includes('/d/')) fileId = data.split('/d/')[1].split('/')[0];
+            else if (data.includes('id=')) fileId = data.split('id=')[1].split('&')[0];
+            if (fileId) {
+                // autoplay=1 파라미터를 추가하고 iframe 속성에 allow="autoplay"를 명시해야 합니다.
+                return `<iframe src="https://drive.google.com/file/d/${fileId}/preview?autoplay=1" allow="autoplay; fullscreen"></iframe>`;
+            }
+        }
+        if (data.toLowerCase().endsWith('.mp4')) {
+            return `<video src="${data}" autoplay loop muted playsinline></video>`;
+        }
+        if (data.match(/\.(jpeg|jpg|gif|png|webp)/i)) {
+            return `<img src="${data}" alt="banner">`;
+        }
+        return data;
+    }
+
     function fetchData() {
         const timestamp = Date.now();
         const pushScript = document.createElement('script');
@@ -132,11 +153,7 @@
 
     window.handlePushResponse = function(response) {
         if (!response || !response.table) return;
-        const rows = response.table.rows.filter(row => {
-            if (!row.c || !row.c[0]) return false;
-            const firstCell = String(row.c[0].v || '').trim();
-            return firstCell !== '' && !firstCell.includes('Promo code');
-        }).slice(0, 3);
+        const rows = response.table.rows.filter(row => row.c && row.c[0] && !String(row.c[0].v || '').includes('Promo code')).slice(0, 3);
         const container = document.getElementById('top3Container');
         container.innerHTML = '';
         rows.forEach((row) => {
@@ -153,9 +170,11 @@
                 let currentIdx = 0;
                 setInterval(() => {
                     const allImgs = card.querySelectorAll('.slider-img');
-                    allImgs[currentIdx].classList.remove('active');
-                    currentIdx = (currentIdx + 1) % allImgs.length;
-                    allImgs[currentIdx].classList.add('active');
+                    if(allImgs.length > 0) {
+                        allImgs[currentIdx].classList.remove('active');
+                        currentIdx = (currentIdx + 1) % allImgs.length;
+                        allImgs[currentIdx].classList.add('active');
+                    }
                 }, 1500);
             }
         });
@@ -163,16 +182,11 @@
 
     window.handleCouponResponse = function(response) {
         if (!response || !response.table) return;
-        const rows = response.table.rows.filter(row => {
-            if (!row.c || !row.c[0]) return false;
-            const firstCell = String(row.c[0].v || '').trim();
-            const secondCell = String(row.c[2]?.v || '').trim();
-            return firstCell !== '' && !firstCell.includes('Promo code') && !secondCell.includes('descriptions');
-        });
+        const rows = response.table.rows.filter(row => row.c && row.c[0] && !String(row.c[0].v || '').includes('Promo code'));
         const wrapper = document.getElementById('contentWrapper');
         wrapper.innerHTML = '';
         rows.forEach(row => {
-            const pcBanners = [row.c[13], row.c[14], row.c[15], row.c[16]].map(c => (c && c.v) ? String(c.v) : null).filter(b => b && b.trim() !== '');
+            const rawBanners = [row.c[13], row.c[14], row.c[15], row.c[16]].map(c => (c && c.v) ? String(c.v) : null).filter(b => b && b.trim() !== '');
             const coupon = {
                 code: row.c[0] ? String(row.c[0].v) : '',
                 discount: row.c[1] ? row.c[1].v : '',
@@ -188,7 +202,7 @@
             };
             const rowDiv = document.createElement('div');
             rowDiv.className = 'horizontal-row';
-            const bannerHtml = pcBanners.map(b => `<div class="dynamic-banner">${b}</div>`).join('');
+            const bannerHtml = rawBanners.map(b => `<div class="dynamic-banner">${createMediaHtml(b)}</div>`).join('');
             rowDiv.innerHTML = `<div class="coupon-card"><div class="coupon-left">${renderDiscountValue(coupon.discount)}<span class="unit">할인 혜택</span></div><div class="coupon-info"><span class="coupon-tag">발품 팔아 모은 혜택</span><h4 translate="no">${coupon.title}</h4><p class="coupon-subtext">${coupon.terms}</p><p class="coupon-valid">${coupon.valid}</p><button class="copy-btn" onclick="event.preventDefault(); copyToClipboard('${coupon.code}')">코드 복사하기</button></div></div><div class="banner-container"><div class="pc-only-container">${bannerHtml}</div><div class="mobile-only-container"><a href="${coupon.landingUrl}" class="m-product-card" target="_blank"><img src="${coupon.productImg}" class="m-product-img"><div class="m-product-info"><div><div class="m-product-title">${coupon.productTitle}</div><div class="m-product-meta">★ ${coupon.rating} (${coupon.reviewCount})</div></div><div class="m-price">${coupon.price}</div></div></a></div></div>`;
             wrapper.appendChild(rowDiv);
             const pcContainer = rowDiv.querySelector('.pc-only-container');
