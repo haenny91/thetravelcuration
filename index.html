@@ -41,14 +41,11 @@
         .coupon-card::after { bottom: -11px; }
         .banner-container { flex: 1; display: flex; gap: 12px; align-items: stretch; }
         .pc-only-container { display: flex; gap: 12px; width: 100%; align-items: stretch; }
-        
-        /* 배너 스타일 및 텍스트 오버레이 */
         .dynamic-banner { flex: 0 0 260px; height: 180px; background: #000; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #eee; transition: transform 0.2s; cursor: pointer; display: block; text-decoration: none; }
         .dynamic-banner:hover { transform: scale(1.02); }
         .dynamic-banner video, .dynamic-banner img, .dynamic-banner iframe { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block; border: none; }
         .banner-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 15px 15px 15px; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%); color: #fff; pointer-events: none; }
         .banner-text { font-size: 0.9rem; font-weight: 700; letter-spacing: -0.02em; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
-
         .mobile-only-container { display: none; }
         @media (max-width: 1024px) {
             .main-title-area { margin: 25px auto 20px auto; padding: 0 15px; flex-direction: column; gap: 6px; }
@@ -65,6 +62,37 @@
             .m-price { font-size: 0.9rem; font-weight: 800; color: #111; }
         }
     </style>
+    <script>
+        document.addEventListener('click', function(e) {
+            if (typeof zaraz === 'undefined') return;
+            if (e.target && e.target.classList.contains('copy-btn')) {
+                const clickAttr = e.target.getAttribute('onclick');
+                const codeMatch = clickAttr ? clickAttr.match(/'([^']+)'/) : null;
+                if (codeMatch) {
+                    zaraz.track("home_coupon_copy", { coupon_code: codeMatch[1] });
+                }
+            }
+            const bannerLink = e.target.closest('.top3-card, .dynamic-banner, .m-product-card');
+            if (bannerLink) {
+                let location = "unknown";
+                let label = "";
+                if (bannerLink.classList.contains('top3-card')) {
+                    location = "top3_curation";
+                    label = bannerLink.querySelector('.top3-title')?.innerText;
+                } else if (bannerLink.classList.contains('dynamic-banner')) {
+                    location = "coupon_side_banner";
+                    label = bannerLink.querySelector('.banner-text')?.innerText || "no_label";
+                } else if (bannerLink.classList.contains('m-product-card')) {
+                    location = "mobile_product_card";
+                    label = bannerLink.querySelector('.m-product-title')?.innerText;
+                }
+                zaraz.track("banner_home_click", { 
+                    banner_location: location,
+                    banner_label: label
+                });
+            }
+        }, true);
+    </script>
 </head>
 <body>
 
@@ -129,20 +157,15 @@
 
     function createMediaHtml(rawData) {
         if (!rawData) return '';
-        
-        // 데이터 분할 (URL | 텍스트 | 이동URL)
         const parts = String(rawData).split('|').map(p => p.trim());
         const mediaUrl = parts[0];
         const labelText = parts[1] || "";
         const linkUrl = parts[2] ? (parts[2].startsWith('http') ? parts[2] : 'https://' + parts[2]) : "#";
-
         if (mediaUrl.toLowerCase().includes('<a') || mediaUrl.toLowerCase().includes('<img') || mediaUrl.toLowerCase().includes('<div')) {
             return mediaUrl;
         }
-
         let innerContent = "";
         const lowMedia = mediaUrl.toLowerCase();
-
         if (mediaUrl.includes('drive.google.com')) {
             let fileId = "";
             if (mediaUrl.includes('/d/')) fileId = mediaUrl.split('/d/')[1].split('/')[0];
@@ -155,10 +178,7 @@
         else {
             innerContent = `<img src="${mediaUrl}" alt="banner">`;
         }
-
-        // 텍스트 오버레이 추가
         const overlay = labelText ? `<div class="banner-overlay"><div class="banner-text">${labelText}</div></div>` : "";
-
         return `<a href="${linkUrl}" target="_blank" class="dynamic-banner">${innerContent}${overlay}</a>`;
     }
 
