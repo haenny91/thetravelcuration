@@ -5,20 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>더 트래블 큐레이션 | 답답해서 직접 모은 전세계 여행 할인 정보</title>
-    
-    <!-- 메타 태그 및 SEO 보강 -->
     <meta name="description" content="거짓광고에 지쳐서 직접 만든 여행 사이트입니다. 여행자 관점에서 손해 안 보는 호텔, 입장권, 액티비티 할인 정보와 쿠폰, 직접 찾은 고퀄리티 상품만 큐레이션 합니다.">
     <meta property="og:title" content="더 트래블 큐레이션 | 답답해서 직접 모은 진짜 여행 할인정보">
     <meta property="og:description" content="뒷광고 없이 찐 혜택과 고퀄리티 여행상품만 큐레이션!">
     <meta property="og:url" content="https://thetravelcuration.com">
     <meta property="og:type" content="website">
-
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8f9fa; padding: 0 0 20px 0; color: #333; }
-        .main-title-area { max-width: 1200px; margin: 40px auto 35px auto; padding: 0 20px; display: flex; align-items: baseline; gap: 15px; }
-        .logo-text { font-size: 2.1rem; font-weight: 900; color: #000; text-decoration: none; letter-spacing: -0.04em; text-transform: lowercase; }
-        .slogan-text { font-size: 0.85rem; color: #999; font-weight: 300; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f8f9fa; padding: 110px 0 20px 0; color: #333; }
+        
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; background: #fff; border-bottom: 1px solid #eee; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .main-title-area { max-width: 1200px; margin: 0 auto; padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .logo-group { display: flex; align-items: baseline; gap: 15px; }
+        .logo-text { font-size: 1.8rem; font-weight: 900; color: #000; text-decoration: none; letter-spacing: -0.04em; text-transform: lowercase; cursor: pointer; }
+        .slogan-text { font-size: 0.8rem; color: #999; font-weight: 300; white-space: nowrap; }
+        
+        .nav-categories { display: flex; gap: 20px; flex-shrink: 0; }
+        .nav-categories a { text-decoration: none; color: #333; font-size: 0.9rem; font-weight: 700; padding: 8px 12px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
+        .nav-categories a:hover { background: #f1f1f1; color: #ff5b00; }
+
         .top3-section, .coupon-section { width: 100%; max-width: 1200px; margin: 0 auto 40px auto; padding: 0 15px; }
         .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; color: #111; }
         .top3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
@@ -33,55 +38,43 @@
         .top3-features li { position: relative; padding-left: 14px; word-break: keep-all; }
         .top3-features li::before { content: "•"; position: absolute; left: 0; color: #ff5b00; font-weight: bold; }
         .top3-price { font-size: 1.2rem; font-weight: 900; color: #ff5b00; text-align: right; border-top: 1px solid #f1f1f1; padding-top: 12px; margin-top: auto; }
-        .horizontal-row { width: 100%; margin-bottom: 25px; display: flex; gap: 15px; align-items: flex-start; flex-wrap: wrap; }
         
+        .horizontal-row { width: 100%; margin-bottom: 25px; display: flex; gap: 15px; align-items: flex-start; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 10px; }
         .coupon-card { flex: 0 0 385px; background: #fff; border-radius: 12px; display: flex; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border: 1px solid #eee; min-height: 250px; }
-        
-        .coupon-left { 
-            background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%); 
-            color: white; 
-            width: 85px; 
-            min-width: 85px; 
-            flex-shrink: 0; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            text-align: center; 
-            border-right: 2px dashed rgba(255,255,255,0.4); 
-            padding: 10px;
-        }
-        
+        .coupon-left { background: linear-gradient(135deg, #ff5b00 0%, #ff8540 100%); color: white; width: 85px; min-width: 85px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-right: 2px dashed rgba(255,255,255,0.4); padding: 10px; }
         .coupon-left .amount { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.05em; line-height: 1.1; word-break: keep-all; }
         .coupon-left .unit { font-size: 0.7rem; margin-top: 5px; font-weight: 600; opacity: 0.9; }
-        
         .coupon-info { padding: 22px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
         .coupon-tag { font-size: 0.65rem; font-weight: 800; color: #ff5b00; background: #fff0e9; padding: 2px 8px; border-radius: 4px; width: fit-content; margin-bottom: 6px; }
         .coupon-info h4 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; line-height: 1.4; color: #111; word-break: keep-all; }
         .coupon-subtext { font-size: 0.8rem; color: #666; line-height: 1.6; font-weight: 500; white-space: pre-line; margin-bottom: 8px; }
         .coupon-valid { font-size: 0.75rem; color: #ff5b00; margin-bottom: 12px; font-weight: 700; }
         .copy-btn { background: #111; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: background 0.2s; width: fit-content; }
-        
         .coupon-card::before, .coupon-card::after { content: ''; position: absolute; left: 75px; width: 20px; height: 20px; background-color: #f8f9fa; border-radius: 50%; z-index: 2; border: 1px solid #eee; }
         .coupon-card::before { top: -11px; }
         .coupon-card::after { bottom: -11px; }
 
-        .banner-container { flex: 1; display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
-        .pc-only-container { display: flex; gap: 12px; width: 100%; align-items: flex-start; flex-wrap: wrap; }
-        .dynamic-banner-wrapper { position: relative; width: 250px; height: 250px; display: inline-block; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #eee; transition: transform 0.2s; text-decoration: none; }
+        .banner-container { flex: 1; display: flex; gap: 12px; align-items: flex-start; flex-wrap: nowrap; }
+        .pc-only-container { display: flex; gap: 12px; width: 100%; align-items: flex-start; flex-wrap: nowrap; }
+        .dynamic-banner-wrapper { position: relative; width: 250px; height: 250px; min-width: 250px; display: inline-block; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #eee; transition: transform 0.2s; text-decoration: none; }
         .dynamic-banner-wrapper:hover { transform: scale(1.02); }
         .coupon-applied-badge { position: absolute; top: 0; right: 0; background: #ff5b00; color: white; padding: 5px 10px; border-radius: 0 0 0 12px; font-size: 11px; font-weight: 800; z-index: 10; pointer-events: none; box-shadow: -2px 2px 5px rgba(0,0,0,0.1); line-height: 1.2; }
         .dynamic-banner-wrapper video, .dynamic-banner-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; border:none; }
+        .dynamic-banner-wrapper ins, .dynamic-banner-wrapper iframe { width: 100% !important; height: 100% !important; margin: 0 !important; }
         .banner-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 45px 15px 15px 15px; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); color: #fff; pointer-events: none; }
         .banner-text { font-size: 0.9rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .banner-price { font-size: 1rem; font-weight: 900; color: #ffdd00; }
         .mobile-only-container { display: none; }
 
         @media (max-width: 1024px) {
-            .main-title-area { flex-direction: column; gap: 6px; padding: 0 15px; margin: 25px auto 20px auto; }
+            body { padding-top: 130px; }
+            .main-title-area { flex-direction: column; gap: 12px; padding: 15px; align-items: flex-start; }
+            .logo-group { flex-direction: column; gap: 4px; }
             .logo-text { font-size: 1.6rem; }
+            .nav-categories { width: 100%; overflow-x: auto; padding-bottom: 5px; gap: 10px; }
+            .nav-categories a { font-size: 0.85rem; padding: 6px 10px; border: 1px solid #eee; }
             .top3-grid { grid-template-columns: 1fr; }
-            .horizontal-row { flex-direction: column; }
+            .horizontal-row { flex-direction: column; overflow-x: visible; }
             .coupon-card { width: 100%; flex: none; min-height: auto; }
             .coupon-left { width: 75px; min-width: 75px; }
             .coupon-left .amount { font-size: 1.4rem; }
@@ -96,46 +89,22 @@
             .m-badge { position: absolute; top: 0; right: 0; background: #ff5b00; color: #fff; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 0 0 0 8px; }
         }
     </style>
-    
-    <!-- Zaraz 상세 트래킹 로직 삽입 -->
-    <script>
-        document.addEventListener('click', function(e) {
-            if (typeof zaraz === 'undefined') return;
-            // 쿠폰 복사 클릭 시
-            if (e.target && e.target.classList.contains('copy-btn')) {
-                const codeMatch = e.target.getAttribute('onclick').match(/'([^']+)'/);
-                if (codeMatch) {
-                    zaraz.track("home_coupon_copy", { coupon_code: codeMatch[1] });
-                }
-            }
-            // 배너 클릭 시
-            const bannerLink = e.target.closest('.top3-card, .dynamic-banner-wrapper, .m-product-card');
-            if (bannerLink) {
-                let location = "unknown";
-                let label = "";
-                if (bannerLink.classList.contains('top3-card')) {
-                    location = "top3_curation";
-                    label = bannerLink.querySelector('.top3-title')?.innerText;
-                } else if (bannerLink.classList.contains('dynamic-banner-wrapper')) {
-                    location = "coupon_side_banner";
-                    label = bannerLink.querySelector('.banner-text')?.innerText || "no_label";
-                } else if (bannerLink.classList.contains('m-product-card')) {
-                    location = "mobile_product_card";
-                    label = bannerLink.querySelector('.m-product-title')?.innerText || "klook_widget";
-                }
-                zaraz.track("banner_home_click", { 
-                    banner_location: location, 
-                    banner_label: label 
-                });
-            }
-        }, true);
-    </script>
 </head>
 <body>
-<div class="main-title-area">
-    <div class="logo-text">thetravelcuration</div>
-    <div class="slogan-text">여행자의, 여행자에 의한, 여행자를 위한 감도 높은 여행큐레이션</div>
-</div>
+<header class="header-fixed">
+    <div class="main-title-area">
+        <div class="logo-group">
+            <a href="/" class="logo-text">thetravelcuration</a>
+            <div class="slogan-text">여행자의, 여행자에 의한, 여행자를 위한 감도 높은 여행큐레이션</div>
+        </div>
+        <nav class="nav-categories">
+            <a href="/tickets">티켓 / 액티비티</a>
+            <a href="/hotels">호텔</a>
+            <a href="/promotions">특가 프로모션 정보</a>
+        </nav>
+    </div>
+</header>
+
 <section class="top3-section">
     <h3 class="section-title">✨ 이것만은 꼭, 큐레이터 픽 TOP3</h3>
     <div id="top3Container" class="top3-grid"></div>
@@ -148,75 +117,44 @@
 <script>
     const SHEET_ID = '1AACJ3r6VIcK2AH65wlJdLPP-7yJKTSW4Z-39msUgDu0';
     function cleanText(text) { return !text ? '' : String(text).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); }
-
     function summarizeTermsNarrative(text) {
         if (!text) return "";
         const clean = String(text).replace(/\s+/g, " ").trim();
         let lines = [];
-        
-        const minMatch = clean.match(/(?:최소|이상)\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|마카오파|MOP))/i) || 
-                       clean.match(/([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|마카오파|MOP))\s*(?:이상|최소)/i);
+        const minMatch = clean.match(/(?:최소|이상)\s*(?:결제|구매)?\s*금액은?\s*([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|마카오파|MOP))/i) || clean.match(/([\d,.]+\s*(?:원|달러|USD|엔|HKD|만원|천원|마카오파|MOP))\s*(?:이상|최소)/i);
         if (minMatch) lines.push(`최소 ${minMatch[1].trim()} 이상 결제 시 사용 가능합니다.`);
-        
-        if (clean.includes("앱에서 처음") || clean.includes("첫 예약") || clean.includes("앱 전용")) {
-            lines.push("앱 첫 예약 시 사용 가능합니다.");
-        }
-        
-        if (clean.includes("중복") || clean.includes("다른 할인") || clean.includes("프로모션과 혼용")) {
-            lines.push("다른 할인 프로모션과 중복 적용되지 않습니다.");
-        }
-
-        if (clean.includes("계정당 1회") || clean.includes("1인당 1회") || clean.includes("사용자당 1회")) {
-            lines.push("계정당 1회만 사용 가능합니다.");
-        }
-
-        const targetProductMsg = "지정된 특정 상품 예약 시에만 적용됩니다.";
-        const limitedQtyMsg = "한정 수량으로 소진 시 조기 종료될 수 있습니다.";
-
+        if (clean.includes("앱에서 처음") || clean.includes("첫 예약") || clean.includes("앱 전용")) lines.push("앱 첫 예약 시 사용 가능합니다.");
+        if (clean.includes("중복") || clean.includes("다른 할인") || clean.includes("프로모션과 혼용")) lines.push("다른 할인 프로모션과 중복 적용되지 않습니다.");
+        if (clean.includes("계정당 1회") || clean.includes("1인당 1회") || clean.includes("사용자당 1회")) lines.push("계정당 1회만 사용 가능합니다.");
         const hasTargetProduct = (clean.includes("특정") || clean.includes("지정된") || clean.includes("일부에만") || clean.includes("패키지에만") || clean.includes("대상 상품"));
         const hasLimitedQty = (clean.includes("선착순") || clean.includes("소진 시") || clean.includes("한정") || clean.includes("수량 제한"));
-
         let tempAll = [...lines];
-        if(hasTargetProduct) tempAll.push(targetProductMsg);
-        if(hasLimitedQty) tempAll.push(limitedQtyMsg);
-
-        if (tempAll.length >= 3) {
-            return lines.join("\n");
-        } else {
-            return tempAll.join("\n");
-        }
+        if(hasTargetProduct) tempAll.push("지정된 특정 상품 예약 시에만 적용됩니다.");
+        if(hasLimitedQty) tempAll.push("한정 수량으로 소진 시 조기 종료될 수 있습니다.");
+        return (tempAll.length >= 3) ? lines.join("\n") : tempAll.join("\n");
     }
-
     function formatKoreanPrice(val) {
         if (!val) return "";
         let str = String(val).replace(/[^0-9]/g, "");
         return str ? "₩" + Number(str).toLocaleString('ko-KR') : val;
     }
     function copyToClipboard(code) { navigator.clipboard.writeText(code).then(() => alert('코드가 복사되었습니다: ' + code)); }
-    
     function createMediaHtml(rawData, hasBadge) {
         if (!rawData) return { pc: '', mobile: '' };
         const badgeHtml = hasBadge ? `<div class="coupon-applied-badge">🎫 쿠폰적용상품</div>` : '';
         const mBadgeHtml = hasBadge ? `<div class="m-badge">🎫 쿠폰적용</div>` : '';
         if (rawData.toLowerCase().includes('<ins') || rawData.toLowerCase().includes('<a')) {
-            return { 
-                pc: `<div class="dynamic-banner-wrapper">${badgeHtml}${rawData}</div>`,
-                mobile: `<div class="m-product-card">${mBadgeHtml}${rawData}</div>`
-            };
+            return { pc: `<div class="dynamic-banner-wrapper">${badgeHtml}${rawData}</div>`, mobile: `<div class="m-product-card">${mBadgeHtml}${rawData}</div>` };
         }
         const parts = String(rawData).split('|').map(p => p.trim());
-        const mediaUrl = parts[0];
-        const labelText = parts[1] || "";
+        const mediaUrl = parts[0]; const labelText = parts[1] || "";
         const linkUrl = parts[2] ? (parts[2].startsWith('http') ? parts[2] : 'https://' + parts[2]) : "#";
         const priceInfo = parts[3] ? formatKoreanPrice(parts[3]) : "";
-        let innerMedia = mediaUrl.toLowerCase().endsWith('.mp4') || mediaUrl.includes('/video/upload/') 
-            ? `<video src="${mediaUrl}" autoplay loop muted playsinline></video>`
-            : `<img src="${mediaUrl}" alt="banner">`;
+        let innerMedia = mediaUrl.toLowerCase().endsWith('.mp4') || mediaUrl.includes('/video/upload/') ? `<video src="${mediaUrl}" autoplay loop muted playsinline></video>` : `<img src="${mediaUrl}" alt="banner">`;
         const pcHtml = `<a href="${linkUrl}" target="_blank" class="dynamic-banner-wrapper">${badgeHtml}${innerMedia}<div class="banner-overlay">${labelText ? `<div class="banner-text">${labelText}</div>` : ""}${priceInfo ? `<div class="banner-price">${priceInfo}</div>` : ""}</div></a>`;
         const mobileHtml = `<a href="${linkUrl}" target="_blank" class="m-product-card">${mBadgeHtml}<img src="${mediaUrl}" class="m-product-img"><div class="m-product-info"><div class="m-product-title">${labelText}</div><div class="m-price">${priceInfo}</div></div></a>`;
         return { pc: pcHtml, mobile: mobileHtml };
     }
-
     window.handlePushResponse = function(response) {
         if (!response || !response.table) return;
         const rows = response.table.rows.filter(row => row.c && row.c[1] && !String(row.c[0]?.v || '').includes('Promo')).slice(0, 3);
@@ -229,8 +167,7 @@
             const priceStr = priceRaw ? "₩" + Number(priceRaw).toLocaleString('ko-KR') : '';
             const url = row.c[10]?.v || '#';
             const imgs = []; for(let i=5; i<=9; i++) { if(row.c[i]?.v) imgs.push(row.c[i].v); }
-            const card = document.createElement('a');
-            card.className = 'top3-card'; card.href = url; card.target = '_blank';
+            const card = document.createElement('a'); card.className = 'top3-card'; card.href = url; card.target = '_blank';
             card.innerHTML = `<div class="slider-container">${imgs.map((img, i) => `<img src="${img}" class="slider-img ${i === 0 ? 'active' : ''}">`).join('')}</div><div class="top3-info"><div class="top3-title">${title}</div><ul class="top3-features">${descLines.map(l => `<li>${l}</li>`).join('')}</ul><div class="top3-price">${priceStr}~</div></div>`;
             container.appendChild(card);
             if (imgs.length > 1) {
@@ -241,60 +178,42 @@
             }
         });
     };
-
     window.handleCouponResponse = function(response) {
         if (!response || !response.table) return;
         const rows = response.table.rows.filter(row => row.c && row.c[0] && !String(row.c[0].v).includes('Promo'));
         const wrapper = document.getElementById('contentWrapper');
         wrapper.innerHTML = '';
         rows.forEach(row => {
-            const code = row.c[0]?.v || '';
-            const discount = row.c[1]?.v || '';
+            const code = row.c[0]?.v || ''; const discount = row.c[1]?.v || '';
             const title = cleanText(row.c[18]?.v || row.c[2]?.v || "특별 할인");
             const terms = row.c[17] ? summarizeTermsNarrative(row.c[17].v) : '';
             const valid = row.c[7] ? (row.c[7].f || String(row.c[7].v)) : "";
-            const bannersData = [
-                { data: row.c[13]?.v, hasBadge: true },
-                { data: row.c[14]?.v, hasBadge: false },
-                { data: row.c[15]?.v, hasBadge: false },
-                { data: row.c[16]?.v, hasBadge: false }
-            ];
-            let pcBanners = '';
-            let mobileBanners = '';
-            bannersData.forEach(b => {
-                const res = createMediaHtml(b.data, b.hasBadge);
-                pcBanners += res.pc;
-                mobileBanners += res.mobile;
-            });
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'horizontal-row';
+            const bannersData = [{ data: row.c[13]?.v, hasBadge: true }, { data: row.c[14]?.v, hasBadge: false }, { data: row.c[15]?.v, hasBadge: false }, { data: row.c[16]?.v, hasBadge: false }];
+            let pcBanners = ''; let mobileBanners = '';
+            bannersData.forEach(b => { const res = createMediaHtml(b.data, b.hasBadge); pcBanners += res.pc; mobileBanners += res.mobile; });
+            const rowDiv = document.createElement('div'); rowDiv.className = 'horizontal-row';
             rowDiv.innerHTML = `<div class="coupon-card"><div class="coupon-left"><span class="amount">${discount}</span><span class="unit">할인</span></div><div class="coupon-info"><span class="coupon-tag">발품 팔아 모은 혜택</span><h4 translate="no">${title}</h4><p class="coupon-subtext">${terms}</p><p class="coupon-valid">${valid}</p><button class="copy-btn" onclick="copyToClipboard('${code}')">쿠폰코드 복사</button></div></div><div class="banner-container"><div class="pc-only-container">${pcBanners}</div><div class="mobile-only-container">${mobileBanners}</div></div>`;
             wrapper.appendChild(rowDiv);
         });
-        const script = document.createElement('script');
-        script.src = "https://affiliate.klook.com/widget/fetch-iframe-init.js";
+        const script = document.createElement('script'); script.src = "https://affiliate.klook.com/widget/fetch-iframe-init.js";
         document.body.appendChild(script);
     };
-
     function fetchData() {
         const t = Date.now();
-        const s1 = document.createElement('script');
-        s1.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handlePushResponse&sheet=Home-Push%20Top3&t=${t}`;
+        const s1 = document.createElement('script'); s1.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handlePushResponse&sheet=Home-Push%20Top3&t=${t}`;
         document.body.appendChild(s1);
-        const s2 = document.createElement('script');
-        s2.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleCouponResponse&sheet=Home-Coupon%20List&t=${t}`;
+        const s2 = document.createElement('script'); s2.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleCouponResponse&sheet=Home-Coupon%20List&t=${t}`;
         document.body.appendChild(s2);
     }
     window.onload = fetchData;
 </script>
-
-<!-- 푸터 정보 및 SEO 키워드 보강 -->
 <footer style="margin-top: 50px; padding: 40px 20px; border-top: 1px solid #eee; text-align: center; color: #888; font-size: 13px;">
     <div style="max-width: 800px; margin: 0 auto;">
         <p><strong>더 트래블 큐레이션 (The Travel Curation)</strong></p>
         <p style="margin-top: 10px; line-height: 1.6;">
-            여행자가 답답해서 직접 만든 여행 정보 플랫폼입니다.
-<br>클룩(Klook), 아고다(Agoda), 마이리얼트립(MyRealTrip), 야놀자 등 주요 여행플랫폼의 <br>최신<strong>할인코드, 쿠폰, 최저가 프로모션</strong> 소식을 엄선하여 큐레이션합니다.
+            여행자가 답답해서 직접 만든 여행 정보 플랫폼입니다.<br>
+            클룩(Klook), 아고다(Agoda), 마이리얼트립(MyRealTrip), 야놀자 등 주요 여행플랫폼의<br>
+            최신 <strong>할인코드, 쿠폰, 최저가 프로모션</strong> 소식을 엄선하여 큐레이션합니다.
         </p>
         <p style="margin-top: 15px; font-size: 11px; color: #bbb;">&copy; 2026 The Travel Curation. All rights reserved.</p>
     </div>
