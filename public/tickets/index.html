@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tickets - The Travel Curation</title>
+    <style>
+        body { font-family: sans-serif; background: #ffffff; padding: 20px; margin: 0; }
+        .header { text-align: center; margin: 40px 0; font-size: 2.2rem; font-weight: 800; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 30px; 
+            max-width: 1100px; 
+            margin: 0 auto; 
+        }
+        .card { 
+            background: white; border-radius: 20px; overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: 0.3s; 
+            text-decoration: none; color: inherit; display: flex; flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .card:hover { transform: translateY(-10px); }
+        .card-img { width: 100%; height: 220px; background: #eee center/cover; }
+        .card-body { padding: 25px; }
+        .card-meta { font-size: 0.85rem; color: #a0aec0; margin-bottom: 10px; }
+        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; }
+        .card-text { color: #4a5568; font-size: 0.95rem; line-height: 1.7; }
+        @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="header">Tickets</div>
+    <div class="grid">
+        
+        <a href="//localhost:1313/tickets/post1/" class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109c0f2?w=800');"></div>
+            <div class="card-body">
+                <div class="card-meta">2026. 05. 12</div>
+                <div class="card-title">유럽 왕복 특가 항공권</div>
+                <div class="card-text"><p>유럽 여행의 시작, 실시간 최저가 정보를 확인하세요.</p></div>
+            </div>
+        </a>
+        
+        <a href="//localhost:1313/tickets/post2/" class="card">
+            <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=800');"></div>
+            <div class="card-body">
+                <div class="card-meta">2026. 05. 10</div>
+                <div class="card-title">도쿄 5성급 호텔 프로모션</div>
+                <div class="card-text"><p>럭셔리 스테이 리스트를 공개합니다.</p></div>
+            </div>
+        </a>
+        
+    </div>
+</body>
+</html>

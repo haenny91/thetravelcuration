@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Contents on </title>
+    <link>//localhost:1313/content/</link>
+    <description>Recent content in Contents on </description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <atom:link href="//localhost:1313/content/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hotels</title>
+      <link>//localhost:1313/content/hotels/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/content/hotels/</guid>
+      <description>&lt;p&gt;아아 다시 호텔 테스트 테스트&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Promotions</title>
+      <link>//localhost:1313/content/promo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/content/promo/</guid>
+      <description>&lt;p&gt;아아 다시 프로모션 테스트 테스트&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Tickets</title>
+      <link>//localhost:1313/content/tickets/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/content/tickets/</guid>
+      <description>&lt;p&gt;아아 다시 티켓 테스트 테스트&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

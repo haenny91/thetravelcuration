@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title></title>
+    <link>//localhost:1313/</link>
+    <description>Recent content on </description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 12 May 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>유럽 왕복 특가 항공권</title>
+      <link>//localhost:1313/tickets/post1/</link>
+      <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tickets/post1/</guid>
+      <description>&lt;p&gt;유럽 여행의 시작, 실시간 최저가 정보를 확인하세요.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>도쿄 5성급 호텔 프로모션</title>
+      <link>//localhost:1313/tickets/post2/</link>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tickets/post2/</guid>
+      <description>&lt;p&gt;럭셔리 스테이 리스트를 공개합니다.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
