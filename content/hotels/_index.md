@@ -1,6 +1,5 @@
 ---
 title: "Hotels"
-type: "post"
-layout: "posts"
+layout: "list"
 url: "/hotels"
 ---
