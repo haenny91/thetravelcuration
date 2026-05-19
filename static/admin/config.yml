@@ -2,7 +2,7 @@ backend:
   name: github
   repo: haenny91/thetravelcuration
   branch: main
-  base_url: https://decap-cms-oauth-gate.vercel.app
+  base_url: https://bold-band-9da9.cjddmsrk.workers.dev
 publish_mode: editorial_workflow
 media_folder: static/img
 public_folder: /img
