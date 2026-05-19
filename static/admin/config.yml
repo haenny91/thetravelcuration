@@ -2,6 +2,7 @@ backend:
   name: github
   repo: haenny91/thetravelcuration
   branch: main
+  base_url: https://decap-cms-oauth-provider.vercel.app # ⬅️ 무료 공용 인증 서버 주소입니다.
 publish_mode: editorial_workflow
 media_folder: static/img
 public_folder: /img
