@@ -23,6 +23,12 @@ collections:
       - label: 'Publish Date'
         name: 'date'
         widget: 'datetime'
+      - label: 'Categories'
+        name: 'categories'
+        widget: 'list'  # <- 버튼형 리스트 위젯 활성화
+      - label: 'Tags'
+        name: 'tags'
+        widget: 'list'  # <- 버튼형 리스트 위젯 활성화
       - label: 'Body'
         name: 'body'
         widget: 'markdown'
