@@ -25,10 +25,18 @@ collections:
         widget: 'datetime'
       - label: 'Categories'
         name: 'categories'
-        widget: 'list'  # <- 버튼형 리스트 위젯 활성화
+        widget: 'list'
+        field:
+          label: 'Category'
+          name: 'category'
+          widget: 'string'
       - label: 'Tags'
         name: 'tags'
-        widget: 'list'  # <- 버튼형 리스트 위젯 활성화
+        widget: 'list'
+        field:
+          label: 'Tag'
+          name: 'tag'
+          widget: 'string'
       - label: 'Body'
         name: 'body'
         widget: 'markdown'
